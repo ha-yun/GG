@@ -1,0 +1,71 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.4.2'
+    id 'io.spring.dependency-management' version '1.1.7'
+}
+
+group = 'com.example'
+version = '0.0.1-SNAPSHOT'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+ext {
+    set('springCloudVersion', "2024.0.0")
+}
+
+dependencies {
+    // WebFlux 기반으로 변경
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+
+    // Spring Cloud Gateway (WebFlux 기반)
+    //implementation 'org.springframework.cloud:spring-cloud-starter-gateway'
+
+    //  Spring MVC 삭제 (Spring Cloud Gateway와 충돌)
+    // implementation 'org.springframework.boot:spring-boot-starter-web'  <-- 삭제
+
+    //  Eureka Client 사용
+    implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
+
+    //  Kafka
+    implementation 'org.apache.kafka:kafka-streams'
+    implementation 'org.springframework.kafka:spring-kafka'
+
+    //  WebSocket (WebFlux와 호환 가능)
+    implementation 'org.springframework.boot:spring-boot-starter-websocket'
+
+    // redis, 토큰 저장 및 조회
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
+
+    //  Lombok
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+
+    //  테스트 관련
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'io.projectreactor:reactor-test'
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+    }
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}

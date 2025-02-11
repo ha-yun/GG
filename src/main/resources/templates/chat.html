@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>1:1 실시간 채팅</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.1/sockjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+</head>
+<body>
+<h1>1:1 실시간 채팅</h1>
+
+<label>내 ID:</label>
+<input type="text" id="myId" placeholder="내 ID 입력">
+<br>
+<label>상대방 ID:</label>
+<input type="text" id="receiverId" placeholder="상대방 ID 입력">
+<br>
+<input type="text" id="message" placeholder="메시지 입력">
+<button onclick="sendMessage()">전송</button>
+
+<h3>채팅 로그:</h3>
+<ul id="chat-log"></ul>
+
+<script>
+    let socket = new SockJS('http://localhost:8080/ws-chat');
+    let stompClient = Stomp.over(socket);
+
+    stompClient.connect({}, function (frame) {
+        console.log('✅ WebSocket 연결됨: ' + frame);
+
+        let myIdInput = document.getElementById("myId");
+        let chatLog = document.getElementById("chat-log");
+
+        if (!chatLog) {
+            console.error("❌ 채팅 로그 요소(chat-log)를 찾을 수 없습니다.");
+            return;
+        }
+
+        // 기존 채팅 기록 불러오기
+        fetch("/api/chat/history")
+            .then(response => response.json())
+            .then(messages => {
+                messages.forEach(msg => {
+                    let parsedMsg = JSON.parse(msg);
+                    let newMessage = document.createElement("li");
+                    newMessage.textContent = `${parsedMsg.senderId}: ${parsedMsg.msg}`;
+                    chatLog.appendChild(newMessage);
+                });
+            });
+
+        // 사용자가 ID 입력 후 구독할 수 있도록 이벤트 추가
+        myIdInput.addEventListener("change", function () {
+            let myId = myIdInput.value;
+            console.log(`🟢 구독하는 경로: /topic/chat/${myId}`);
+
+            stompClient.subscribe(`/topic/chat/${myId}`, function (message) {
+                let data = JSON.parse(message.body);
+                let newMessage = document.createElement("li");
+                newMessage.textContent = `${data.senderId}: ${data.msg}`;
+                chatLog.appendChild(newMessage);
+            });
+        });
+    });
+
+    // 메시지 전송 함수
+    function sendMessage() {
+        let myId = document.getElementById("myId").value;
+        let receiverId = document.getElementById("receiverId").value;
+        let message = document.getElementById("message").value;
+
+        if (!myId || !receiverId || !message) {
+            alert("⚠️ 모든 필드를 입력하세요!");
+            return;
+        }
+
+        let chatMessage = {
+            senderId: myId,
+            receiverId: receiverId,
+            msg: message
+        };
+
+        if (stompClient && stompClient.connected) {
+            stompClient.send("/app/chat.send", {}, JSON.stringify(chatMessage));
+            console.log("📨 메시지 전송됨:", chatMessage);
+        } else {
+            console.error("❌ WebSocket 연결이 설정되지 않았습니다.");
+        }
+    }
+</script>
+
+</body>
+</html>
