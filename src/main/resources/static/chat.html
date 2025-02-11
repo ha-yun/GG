@@ -27,13 +27,13 @@
   let stompClient = Stomp.over(socket);
 
   stompClient.connect({}, function (frame) {
-    console.log('✅ WebSocket 연결됨: ' + frame);
+    console.log(' WebSocket 연결됨: ' + frame);
 
     let myIdInput = document.getElementById("myId");
     let chatLog = document.getElementById("chat-log");
 
     if (!chatLog) {
-      console.error("❌ 채팅 로그 요소(chat-log)를 찾을 수 없습니다.");
+      console.error(" 채팅 로그 요소(chat-log)를 찾을 수 없습니다.");
       return;
     }
 
@@ -52,7 +52,7 @@
     // 사용자가 ID 입력 후 구독할 수 있도록 이벤트 추가
     myIdInput.addEventListener("change", function () {
       let myId = myIdInput.value;
-      console.log(`🟢 구독하는 경로: /topic/chat/${myId}`);
+      console.log(`구독하는 경로: /topic/chat/${myId}`);
 
       stompClient.subscribe(`/topic/chat/${myId}`, function (message) {
         let data = JSON.parse(message.body);
@@ -70,7 +70,7 @@
     let message = document.getElementById("message").value;
 
     if (!myId || !receiverId || !message) {
-      alert("⚠️ 모든 필드를 입력하세요!");
+      alert(" 모든 필드를 입력하세요!");
       return;
     }
 
@@ -82,9 +82,9 @@
 
     if (stompClient && stompClient.connected) {
       stompClient.send("/app/chat.send", {}, JSON.stringify(chatMessage));
-      console.log("📨 메시지 전송됨:", chatMessage);
+      console.log(" 메시지 전송됨:", chatMessage);
     } else {
-      console.error("❌ WebSocket 연결이 설정되지 않았습니다.");
+      console.error(" WebSocket 연결이 설정되지 않았습니다.");
     }
   }
 </script>

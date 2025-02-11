@@ -35,17 +35,17 @@ public class KafkaConsumer {
             KafkaDto kafkaDto = objectMapper.readValue(message, KafkaDto.class);
             System.out.println("Kafka Consumer received: " + kafkaDto);
 
-            // 🔥 receiverId가 null, 빈 값, 공백만 있는 값이면 오류 방지
+            // receiverId가 null, 빈 값, 공백만 있는 값이면 오류 방지
             if (kafkaDto.getReceiverId() == null || kafkaDto.getReceiverId().trim().isEmpty()) {
-                System.err.println("❌ 잘못된 receiverId: 메시지를 전송할 대상이 없습니다.");
+                System.err.println("잘못된 receiverId: 메시지를 전송할 대상이 없습니다.");
                 return;
             }
 
-            // 🔥 목적지 경로 설정
+            //  목적지 경로 설정
             String destination = "/topic/chat/" + kafkaDto.getReceiverId();
             System.out.println("📨 WebSocket 전송 대상: " + destination);
 
-            // 🔥 목적지가 올바르게 설정되었는지 확인 후 WebSocket 전송
+            // 목적지가 올바르게 설정되었는지 확인 후 WebSocket 전송
             messagingTemplate.convertAndSend(destination, kafkaDto);
 
             // Redis에 메시지 저장
