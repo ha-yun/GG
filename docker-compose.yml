@@ -1,0 +1,72 @@
+# 도커 컴포즈 파일
+
+networks:                 # 네트워크 지정
+  all_dir_network:        # 커스텀(all_dir_network) 지정
+    driver: bridge        # 드라이버 타입 지정
+
+
+# 서비스 파일
+services:
+  eureka-server: # 서비스명
+    build: ./eureka-server
+    container_name: eureka-server
+    ports:
+      - "8761:8761"
+    networks:
+      - all_dir_network
+  
+  database: # 서비스명
+    image: mysql
+    restart: always # 비정상 다운될때 자동 재가동
+    environment:
+      - MYSQL_ROOT_PASSWORD=p1234 # 루트 사용자 비번
+      - MYSQL_DATABASE=gg       # 초기 데이터베이스명
+      - MYSQL_USER=guest          # 일반 사용자 아이디
+      - MYSQL_PASSWORD=p1234      # 일반 사용자 비번
+    ports:
+      - "3306:3306"
+    networks:
+        - all_dir_network
+
+  redis:
+    image: redis
+    container_name: redis
+    restart: always
+    ports:
+      - "6379:6379"
+    networks:
+      - all_dir_network
+  
+  zookeeper:
+    image: zookeeper
+    container_name: zookeeper
+    ports:
+      - "2181:2181"
+    networks:
+      - all_dir_network
+      
+  kafka:
+    image: apache/kafka:latest
+    container_name: kafka
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
+    depends_on:
+      - zookeeper
+    networks:
+      - all_dir_network
+
+  api-gateway:
+    build: ./api-gateway
+    container_name: api-gateway
+    depends_on:
+      - eureka-server
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
+    ports:
+      - "8080:8080"
+    networks:
+      - all_dir_network

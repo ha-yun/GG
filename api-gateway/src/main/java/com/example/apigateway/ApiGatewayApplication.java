@@ -24,7 +24,7 @@ public class ApiGatewayApplication {
         System.out.println("게이트웨이에서 개별 서비스 등록");
         return builder.routes()
                 .route("msa-user-service",
-                        r -> r.path("/auth/**").uri("lb://msa-user-service"))
+                        r -> r.path("/auth/**").uri("lb://msa-user-demo"))
                 .build();
 
 
