@@ -82,8 +82,6 @@ public class PostService {
 
     // 연예인 권한 확인 (msa-user 서비스와 통신 필요)
     private boolean isCelebrity(Long userId) {
-        // msa-user 서비스와 통신하여 사용자 권한 확인
-        // 구현 필요
-        return true; // 임시 반환값
+        return celebrityUserIds.contains(userId);
     }
 }
