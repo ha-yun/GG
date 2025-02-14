@@ -6,6 +6,8 @@ import com.example.msastarboard.exception.UnauthorizedException;
 import com.example.msastarboard.repository.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -40,7 +42,7 @@ public class PostService {
         post.setAuthorId(userId);
         if (image != null && !image.isEmpty()) {
             String imageUrl = fileUploadService.uploadFile(image);
-            post.setImageUrl(imageUrl);
+            post.setContentUrl(imageUrl); // contentUrl로 변경
         }
         return postRepository.save(post);
     }
@@ -50,9 +52,9 @@ public class PostService {
         postRepository.deleteById(id);
     }
 
-    // 모든 게시글 조회
-    public List<Post> getAllPosts() {
-        return postRepository.findAll();
+    // 모든 게시글 조회 (페이징 처리 추가)
+    public Page<Post> getAllPosts(Pageable pageable) {
+        return postRepository.findAll(pageable);
     }
 
     // 게시글 검색 (제목, 내용, 제목+내용 필터 적용)
@@ -76,7 +78,7 @@ public class PostService {
         post.setContent(updatedPost.getContent());
         if (image != null && !image.isEmpty()) {
             String imageUrl = fileUploadService.uploadFile(image);
-            post.setImageUrl(imageUrl);
+            post.setContentUrl(imageUrl); // contentUrl로 변경
         }
         return postRepository.save(post);
     }

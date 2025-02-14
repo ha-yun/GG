@@ -1,22 +1,29 @@
 package com.example.msastarboard.service;
 
 import com.example.msastarboard.entity.Comment;
-import com.example.msastarboard.repository.CommentRepository;
-import com.example.msastarboard.exception.UnauthorizedException;
 import com.example.msastarboard.exception.ResourceNotFoundException;
+import com.example.msastarboard.exception.UnauthorizedException;
+import com.example.msastarboard.repository.CommentRepository;
+import com.example.msastarboard.repository.PostRepository;
 import org.springframework.stereotype.Service;
 
 @Service
 public class CommentService {
 
     private final CommentRepository commentRepository;
+    private final PostRepository postRepository; // PostRepository 추가
 
-    public CommentService(CommentRepository commentRepository) {
+    public CommentService(CommentRepository commentRepository, PostRepository postRepository) {
         this.commentRepository = commentRepository;
+        this.postRepository = postRepository; // 생성자에 주입
     }
 
     // 댓글 생성
     public Comment createComment(Comment comment) {
+        // 게시글 존재 여부 확인
+        if (!postRepository.existsById(comment.getPost().getId())) {
+            throw new ResourceNotFoundException("Post not found");
+        }
         return commentRepository.save(comment);
     }
 

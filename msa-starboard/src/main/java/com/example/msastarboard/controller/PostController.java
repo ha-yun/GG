@@ -4,6 +4,9 @@ import com.example.msastarboard.entity.Post;
 import com.example.msastarboard.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -46,10 +49,10 @@ public class PostController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    // 모든 게시글 조회
+    // 모든 게시글 조회 (페이징 처리 추가)
     @GetMapping("")
-    public ResponseEntity<List<Post>> getAllPosts() {
-        List<Post> posts = postService.getAllPosts();
+    public ResponseEntity<Page<Post>> getAllPosts(@PageableDefault(size = 10, sort = "createdAt", direction = org.springframework.data.domain.Sort.Direction.DESC) Pageable pageable) {
+        Page<Post> posts = postService.getAllPosts(pageable);
         return new ResponseEntity<>(posts, HttpStatus.OK);
     }
 
