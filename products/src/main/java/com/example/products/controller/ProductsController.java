@@ -22,17 +22,32 @@ public class ProductsController {
     @Autowired
     private KafkaProducer kafkaProducer;
 
-
+    // 굿즈 전체 목록
     @GetMapping
     public ResponseEntity<List<ProductDto>> allProducts() {
         return ResponseEntity.ok( productsService.allProducts() );
     }
-
+    // 굿즈 상세 조회
     @GetMapping("/detail/{pdtId}")
     public ResponseEntity<ProductDetailDto> productDetail(@PathVariable Integer pdtId) {
         return ResponseEntity.ok(productsService.getProductDetailInfo(pdtId));
     }
 
+
+    // 키워드 검색
+    @GetMapping("/search")
+    public List<ProductEntity> searchProducts(@RequestParam String keyword) {
+        return productsService.searchProducts(keyword);
+    }
+
+    // 가격 필터링
+    @GetMapping("/filter")
+    public List<ProductEntity> filterProductsByPrice(@RequestParam int minPrice, @RequestParam int maxPrice) {
+        return productsService.filterProductsByPrice(minPrice, maxPrice);
+    }
+
+
+    // 장바구니 상품 추가
     @PostMapping("/shoppingcart")
     public ResponseEntity<String> addShoppingCart(
             @RequestHeader("X-Auth-User") String email,
@@ -40,10 +55,12 @@ public class ProductsController {
         productsService.addShoppingCart(email, shoppingCartReqDto);
         return ResponseEntity.ok("ShoppingCart added");
     }
+    // 장바구니 상품 목록
     @GetMapping("/shoppingcart")
     public ResponseEntity<List<ShoppingCartReqDto>> getShoppingCart(@RequestHeader("X-Auth-User") String email) {
         return ResponseEntity.ok(productsService.getShoppingCart(email));
     }
+
 
     // 장바구니 목록 삭제
     @DeleteMapping("/shoppingcart/{pdtId}")
@@ -61,7 +78,7 @@ public class ProductsController {
     }
 
 
-
+    // 결제 시스템
     @PostMapping("/payment")
     public ResponseEntity<String> payment(
             @RequestHeader("X-Auth-User") String email,
@@ -73,17 +90,4 @@ public class ProductsController {
         }catch (Exception e){}
         return ResponseEntity.ok("결제 완료");
     }
-
-    @GetMapping("/search")
-    public List<ProductEntity> searchProducts(@RequestParam String keyword) {
-        return productsService.searchProducts(keyword);
-    }
-
-    // 가격 필터링 API
-    @GetMapping("/filter")
-    public List<ProductEntity> filterProductsByPrice(@RequestParam int minPrice, @RequestParam int maxPrice) {
-        return productsService.filterProductsByPrice(minPrice, maxPrice);
-    }
-
-
 }
