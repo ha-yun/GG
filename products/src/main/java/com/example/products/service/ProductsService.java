@@ -26,7 +26,7 @@ public class ProductsService {
     @Autowired
     private KafkaProducer kafkaProducer;
 
-
+    // 상품 목록
     public List<ProductDto> allProducts() {
         List<ProductEntity> pdts = productsRepository.findAll();
         return pdts.stream()
@@ -37,6 +37,8 @@ public class ProductsService {
                 .collect(Collectors.toList());
     }
 
+
+    // 제품 조회
     public ProductDetailDto getProductDetailInfo(Integer pdtId) {
         ProductEntity productEntity = productsRepository.findById(pdtId)
                 .orElseThrow(()->new IllegalArgumentException("Product not found or pdtId miss"));
@@ -49,6 +51,19 @@ public class ProductsService {
                 .build();
     }
 
+
+    // 굿즈 키워드 검색
+    public List<ProductEntity> searchProducts(String keyword) {
+        return productsRepository.findByPdtNameContaining(keyword);
+    }
+
+    // 가격 필터링 검색
+    public List<ProductEntity> filterProductsByPrice(int minPrice, int maxPrice) {
+        return productsRepository.filterByPrice(minPrice, maxPrice);
+    }
+
+
+    // 장바구니
     @Transactional
     public void addShoppingCart(String email, ShoppingCartReqDto shoppingCartReqDto) {
         Optional<ProductEntity> optionalProductEntity
@@ -84,6 +99,7 @@ public class ProductsService {
         }
     }
 
+    // 특정 사용자의 장바구니 내 모든 제품 보기
     public List<ShoppingCartReqDto> getShoppingCart(String email) {
         List<CartEntity> carts = cartRepository.findByEmail(email);
         return carts.stream()
@@ -96,7 +112,7 @@ public class ProductsService {
                 .collect(Collectors.toList());
     }
 
-    //장바구니 목록 삭제
+    //장바구니 특정 제품 삭제
     @Transactional
     public void removeItemFromCart(String email, Integer pdtId) {
         Optional<CartEntity> opt = cartRepository.findByEmailAndPdtId(email, pdtId);
@@ -108,6 +124,7 @@ public class ProductsService {
         }
     }
 
+    // 장바구니 목록 모두 삭제
     @Transactional
     public void clearShoppingCart(String email) {
         List<CartEntity> carts = cartRepository.findByEmail(email);
@@ -117,16 +134,6 @@ public class ProductsService {
         }
 
         cartRepository.deleteAll(carts);
-    }
-
-    // 키워드 검색
-    public List<ProductEntity> searchProducts(String keyword) {
-        return productsRepository.findByPdtNameContaining(keyword);
-    }
-
-    // 가격 필터링
-    public List<ProductEntity> filterProductsByPrice(int minPrice, int maxPrice) {
-        return productsRepository.filterByPrice(minPrice, maxPrice);
     }
 }
 

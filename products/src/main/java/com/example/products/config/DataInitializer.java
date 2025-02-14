@@ -8,6 +8,9 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+/**
+ * 데이터 임의로 넣기
+ */
 @Component
 @RequiredArgsConstructor
 public class DataInitializer {
