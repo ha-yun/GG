@@ -1,11 +1,14 @@
 package com.example.msastarboard.service;
 
 import com.example.msastarboard.entity.Post;
-import com.example.msastarboard.repository.PostRepository;
-import com.example.msastarboard.exception.UnauthorizedException;
 import com.example.msastarboard.exception.ResourceNotFoundException;
+import com.example.msastarboard.exception.UnauthorizedException;
+import com.example.msastarboard.repository.PostRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -18,13 +21,15 @@ public class PostService {
     private final PostRepository postRepository;
     private final FileUploadService fileUploadService;
 
-    @Value("${celebrity.user.ids}")
-    private List<Long> celebrityUserIds;
+    @Autowired
+    private RestTemplate restTemplate;
 
-    public PostService(PostRepository postRepository, FileUploadService fileUploadService, @Value("${celebrity.user.ids}") List<Long> celebrityUserIds) {
+    @Value("${msa.user.service.url}")
+    private String msaUserServiceUrl;
+
+    public PostService(PostRepository postRepository, FileUploadService fileUploadService) {
         this.postRepository = postRepository;
         this.fileUploadService = fileUploadService;
-        this.celebrityUserIds = celebrityUserIds;
     }
 
     // 게시글 생성 (연예인 전용)
@@ -52,16 +57,12 @@ public class PostService {
 
     // 게시글 검색 (제목, 내용, 제목+내용 필터 적용)
     public List<Post> searchPosts(String keyword, String filterType) {
-        switch (filterType) {
-            case "title":
-                return postRepository.findByTitleContaining(keyword);
-            case "content":
-                return postRepository.findByContentContaining(keyword);
-            case "title+content":
-                return postRepository.findByTitleContainingOrContentContaining(keyword, keyword);
-            default:
-                return new ArrayList<>();
-        }
+        return switch (filterType) {
+            case "title" -> postRepository.findByTitleContaining(keyword);
+            case "content" -> postRepository.findByContentContaining(keyword);
+            case "title+content" -> postRepository.findByTitleContainingOrContentContaining(keyword, keyword);
+            default -> new ArrayList<>();
+        };
     }
 
     // 게시글 수정 (연예인 전용)
@@ -82,6 +83,8 @@ public class PostService {
 
     // 연예인 권한 확인 (msa-user 서비스와 통신 필요)
     private boolean isCelebrity(Long userId) {
-        return celebrityUserIds.contains(userId);
+        String url = msaUserServiceUrl + "/user/celebrity/" + userId;
+        ResponseEntity<Boolean> response = restTemplate.getForEntity(url, Boolean.class);
+        return Boolean.TRUE.equals(response.getBody());
     }
 }
