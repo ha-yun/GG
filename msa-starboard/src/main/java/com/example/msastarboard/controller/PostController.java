@@ -2,6 +2,7 @@ package com.example.msastarboard.controller;
 
 import com.example.msastarboard.entity.Post;
 import com.example.msastarboard.service.PostService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -31,8 +32,12 @@ public class PostController {
 
     // 게시글 생성 (연예인 전용)
     @PostMapping("/create")
-    public ResponseEntity<Post> createPost(@RequestPart("post") Post post,
+    public ResponseEntity<Post> createPost(@RequestPart("post") String postJson,
                                            @RequestPart(value = "image", required = false) MultipartFile image) throws IOException { // 인증된 사용자 이메일
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        Post post = objectMapper.readValue(postJson, Post.class);  // ✅ JSON을 Post 객체로 변환
+
         // userEmail을 사용하여 사용자 ID를 가져오는 로직 (msa-user 서비스와 통신)
         Long userId = 1L; // 임시로 userId를 1L로 설정
         Post createdPost = postService.createPost(post, userId, image);
