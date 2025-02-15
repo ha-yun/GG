@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>회원가입</title>
+</head>
+<body>
+<h2>회원가입</h2>
+<form action="/user/signup" method="POST">
+  <label>Email:</label>
+  <input type="email" name="email" required>
+  <br>
+
+  <label>Username:</label>
+  <input type="text" name="userName" required>
+  <br>
+
+  <label>Password:</label>
+  <input type="password" name="password" required>
+  <br>
+
+  <label>Role:</label>
+  <select name="roles" required>
+    <option value="ROLE_STAR">Star</option>
+    <option value="ROLE_FAN">Fan</option>
+  </select>
+  <br>
+
+  <button type="submit">Sign Up</button>
+</form>
+</body>
+</html>
