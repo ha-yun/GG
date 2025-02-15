@@ -31,6 +31,8 @@ public class ApiGatewayApplication {
                         r -> r.path("/api/posts").uri("lb://msa-starboard")) // /api/posts/**
                 .route("msa-live",
                         r -> r.path("/live").uri("lb://msa-live"))
+                .route("products",
+                        r -> r.path("/pdts/**").uri("lb://products"))
                 .build();
 
 
