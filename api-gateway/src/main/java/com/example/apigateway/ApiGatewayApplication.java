@@ -14,6 +14,7 @@ public class ApiGatewayApplication {
     public static void main(String[] args) {
         SpringApplication.run(ApiGatewayApplication.class, args);
     }
+
     /**
      * 게이트웨이에서 각종 서비스를 등록하는 방법중 코드로 등록 -> 빈
      * RouteLocator 객체를 빈으로 등록
@@ -23,11 +24,12 @@ public class ApiGatewayApplication {
     public RouteLocator starlinkRouteLocator(RouteLocatorBuilder builder) {
         System.out.println("게이트웨이에서 개별 서비스 등록");
         return builder.routes()
-                .route("msa-user-service",
-                        r -> r.path("/auth/**").uri("lb://msa-user-service"))
+                .route("msa-user-auth",
+                        r -> r.path("/auth/**").uri("lb://msa-user-demo")) // /auth/**
+                .route("msa-user",
+                        r -> r.path("/user/**").uri("lb://msa-user-demo")) // /user/**
+                .route("msa-starboard", // msa-starboard 라우팅 추가
+                        r -> r.path("/api/posts").uri("lb://msa-starboard")) // /api/posts/**
                 .build();
-
-
     }
 }
-
