@@ -43,7 +43,8 @@ public class AuthService {
 
         } catch (Exception e) {
             System.out.println("로그인시 오류 발생" + e.getMessage());
-            return "로그인 실패";
+            e.printStackTrace();
+            return "로그인 실패"+e;
         }
         return "로그인 성공";
     }

@@ -51,7 +51,7 @@ public class JwtFilter implements WebFilter, ApplicationContextAware {
 
         // 1. 요청 URL 확인, 획득
         String reqUrl = exchange.getRequest().getURI().getPath();
-        System.out.println("요청 URL " + reqUrl );
+        System.out.println("🔥요청된 reqUrl = " + reqUrl);
 
         // 2. 스프링시큐리에서 인증 없이 통과 가능한 URL 들은 바로 통과 (체크 필요)->종료(요청을 넘김)
         //    인증없이 통과될 URL과 일치하는 URL 존재하는지 체킹 -> AntPathMatcher

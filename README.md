@@ -10,3 +10,9 @@
 | msa-products | 굿즈 스토어 |
 | msa-chat | 1:1 고객 문의 센터 |
 | msa-live | 단체 라이브 채팅 |
+
+
+#### docker-compose 테스트
+```
+    docker-compose up --build
+```

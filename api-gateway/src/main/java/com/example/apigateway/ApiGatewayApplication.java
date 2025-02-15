@@ -23,8 +23,14 @@ public class ApiGatewayApplication {
     public RouteLocator starlinkRouteLocator(RouteLocatorBuilder builder) {
         System.out.println("게이트웨이에서 개별 서비스 등록");
         return builder.routes()
-                .route("msa-user-service",
-                        r -> r.path("/auth/**").uri("lb://msa-user-demo"))
+                .route("msa-user-auth",
+                        r -> r.path("/auth/**").uri("lb://msa-user-demo")) // /auth/**
+                .route("msa-user",
+                        r -> r.path("/user/**").uri("lb://msa-user-demo")) // /user/**
+                .route("msa-starboard", // msa-starboard 라우팅 추가
+                        r -> r.path("/api/posts").uri("lb://msa-starboard")) // /api/posts/**
+                .route("msa-live",
+                        r -> r.path("/live").uri("lb://msa-live"))
                 .build();
 
 
