@@ -61,6 +61,7 @@ public class ProductsController {
         return ResponseEntity.ok(productsService.getShoppingCart(email));
     }
 
+
     // 장바구니 목록 삭제
     @DeleteMapping("/shoppingcart/{pdtId}")
     public ResponseEntity<String> removeItemFromCart(
