@@ -50,7 +50,7 @@ public class KafkaConsumer {
             order.setPdtId(product.getPdtId());
             order.setPdtPrice(product.getPdtPrice());  // 상품 가격 반영
             order.setPdtName(product.getPdtName());  // 상품 이름 반영
-            order.setPdtQuantity(1);  // 기본 수량 (필요하면 수정)
+            order.setPdtQuantity(product.getPdtQuantity());  // 기본 수량 (필요하면 수정)
             order.setAmount(Integer.parseInt(paymentDto.getAmount()));
             order.setOrderStatus("COMPLETED");
             order.setOrderDate(LocalDateTime.now());
