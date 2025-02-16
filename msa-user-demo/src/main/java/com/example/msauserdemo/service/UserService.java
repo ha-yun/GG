@@ -22,8 +22,8 @@ public class UserService {
     private PasswordEncoder passwordEncoder;
     @Autowired
     private RedisTemplate<String, Object> redisTemplate;
-    @Autowired
-    private JavaMailSenderImpl mailSender;
+//    @Autowired
+//    private JavaMailSenderImpl mailSender;
 
     public void createUser(@Valid UserDto userDto) {
         if( userDto.getEmail() == null || userDto.getEmail().isEmpty() ) {
@@ -49,22 +49,22 @@ public class UserService {
 
         userRepository.save(userEntity);
 
-        sendValidEmail(userEntity);
+        // sendValidEmail(userEntity);
     }
-    private void sendValidEmail(UserEntity userEntity) {
-        String token = UUID.randomUUID().toString();
-        redisTemplate.opsForValue().set(token, userEntity.getEmail(),1, TimeUnit.DAYS);
-        String url = "http://localhost:8080/user/vaild?token=" + token;
-        sendMail( userEntity.getEmail(), "이메일 인증", "링크를 눌러서 인증: " + url);
-    }
+    // private void sendValidEmail(UserEntity userEntity) {
+    //     String token = UUID.randomUUID().toString();
+    //     redisTemplate.opsForValue().set(token, userEntity.getEmail(),1, TimeUnit.DAYS);
+    //     String url = "http://localhost:8080/user/vaild?token=" + token;
+    //     sendMail( userEntity.getEmail(), "이메일 인증", "링크를 눌러서 인증: " + url);
+    // }
 
-    private void sendMail(String email, String subject, String content) {
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(email);
-        message.setSubject(subject);
-        message.setText(content);
-        mailSender.send(message);
-    }
+    // private void sendMail(String email, String subject, String content) {
+    //     SimpleMailMessage message = new SimpleMailMessage();
+    //     message.setTo(email);
+    //     message.setSubject(subject);
+    //     message.setText(content);
+    //     mailSender.send(message);
+    // }
     public void updateActivate(String token) {
         String email = (String) redisTemplate.opsForValue().get(token);
         if (email == null) {
