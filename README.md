@@ -8,8 +8,10 @@
 | msa-user | 회원가입, 로그인, 회원정보 관리 |
 | msa-starboard | 구독 전용 게시판 |
 | msa-products | 굿즈 스토어 |
-| msa-chat | 1:1 고객 문의 센터 |
-| msa-live | 단체 라이브 채팅 |
+| msa-chat | 팬과 스타의 라이브 채팅 |
+
+<!-- | msa-chat | 1:1 고객 문의 센터 |
+| msa-live | 단체 라이브 채팅 | -->
 
 
 #### docker-compose 테스트
