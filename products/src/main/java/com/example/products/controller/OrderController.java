@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@CrossOrigin(origins = "*")  // 모든 출처 허용 (테스트용)
+
 @RestController
 @RequestMapping("/orders")
 public class OrderController {
@@ -28,7 +28,7 @@ public class OrderController {
         return orderService.getOrderById(orderId);
     }
 
-    // (3) 전체 주문 목록 조회 (관리자용)
+    // 전체 주문 목록 조회 (관리자용)
     @GetMapping("/all")
     public List<Order> getAllOrders() {
         return orderService.getAllOrders();
