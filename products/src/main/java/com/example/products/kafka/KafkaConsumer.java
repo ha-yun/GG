@@ -18,7 +18,7 @@ import java.util.Optional;
 public class KafkaConsumer {
     private final ObjectMapper objectMapper;
     private final OrderRepository orderRepository;
-    private final ProductsRepository productsRepository;  // 기존 ProductsRepository 사용
+    private final ProductsRepository productsRepository;
 
     @Autowired
     public KafkaConsumer(ObjectMapper objectMapper, OrderRepository orderRepository, ProductsRepository productsRepository) {
@@ -43,14 +43,14 @@ public class KafkaConsumer {
                 return;
             }
 
-            ProductEntity product = optionalProduct.get(); // 상품 정보 가져오기
+            ProductEntity product = optionalProduct.get();
 
             // 주문 객체 생성 후 저장
             Order order = new Order();
             order.setPdtId(product.getPdtId());
-            order.setPdtPrice(product.getPdtPrice());  // 상품 가격 반영
-            order.setPdtName(product.getPdtName());  // 상품 이름 반영
-            order.setPdtQuantity(product.getPdtQuantity());  // 기본 수량 (필요하면 수정)
+            order.setPdtPrice(product.getPdtPrice());
+            order.setPdtName(product.getPdtName());
+            order.setPdtQuantity(product.getPdtQuantity());
             order.setAmount(Integer.parseInt(paymentDto.getAmount()));
             order.setOrderStatus("COMPLETED");
             order.setOrderDate(LocalDateTime.now());
