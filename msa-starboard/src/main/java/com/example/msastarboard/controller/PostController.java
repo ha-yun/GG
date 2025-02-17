@@ -35,9 +35,14 @@ PostController {
     @PostMapping("/create")
     public ResponseEntity<Post> createPost(@RequestPart("post") Post post,
                                            @RequestPart(value = "image", required = false) MultipartFile image,
-                                           @RequestHeader("X-Auth-User") String userEmail) throws IOException {
-        Post createdPost = postService.createPost(post, userEmail, image);
-        return new ResponseEntity<>(createdPost, HttpStatus.CREATED);
+                                           @RequestHeader("X-Auth-User") String userEmail,
+                                           @RequestHeader("X-Auth-Role") String role) throws IOException {
+        if(role.equals("ROLE_STAR")) {
+            System.out.println(" 게시글 생성"+post);
+            Post createdPost = postService.createPost(post, userEmail, image);
+            return new ResponseEntity<>(createdPost, HttpStatus.CREATED);
+        }
+        return new ResponseEntity<>(new Post(), HttpStatus.OK);
     }
 
 
