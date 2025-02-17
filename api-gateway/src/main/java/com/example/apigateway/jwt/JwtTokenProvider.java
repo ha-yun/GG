@@ -77,7 +77,8 @@ public class JwtTokenProvider {
                     .parseClaimsJws(token)
                     .getBody();
             // 이메일 키값을 넣어서 획득
-            return claims.get("email", String.class);
+            // return claims.get("email", String.class);
+            return claims.getSubject(); // JWT의 Payload에는 "email" 필드가 없고, "sub"(subject) 필드에 이메일이 저장되어 있다
         }catch (ExpiredJwtException e){
             System.out.println("getEmailFromToken() 기간 만료 토큰 오류");
             throw e;
