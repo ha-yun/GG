@@ -16,7 +16,8 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/posts")
-public class PostController {
+public class
+PostController {
 
     private final PostService postService;
 
@@ -32,14 +33,13 @@ public class PostController {
 
     // 게시글 생성 (연예인 전용)
     @PostMapping("/create")
-    public ResponseEntity<Post> createPost(@RequestPart("post") String postJson,
+    public ResponseEntity<Post> createPost(@RequestPart("post") Post post,
                                            @RequestPart(value = "image", required = false) MultipartFile image,
                                            @RequestHeader("X-Auth-User") String userEmail) throws IOException {
-        ObjectMapper objectMapper = new ObjectMapper();
-        Post post = objectMapper.readValue(postJson, Post.class);
         Post createdPost = postService.createPost(post, userEmail, image);
         return new ResponseEntity<>(createdPost, HttpStatus.CREATED);
     }
+
 
     // 게시글 삭제
     @DeleteMapping("/{id}")

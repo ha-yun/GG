@@ -4,35 +4,37 @@ import com.example.msastarboard.entity.Post;
 import com.example.msastarboard.exception.ResourceNotFoundException;
 import com.example.msastarboard.exception.UnauthorizedException;
 import com.example.msastarboard.repository.PostRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.util.List;
 
 @Service
 public class PostService {
+    private static final Logger logger = LoggerFactory.getLogger(PostService.class);
 
     private final PostRepository postRepository;
     private final FileUploadService fileUploadService;
 
-    @Autowired
-    private RestTemplate restTemplate;
+    private final RestTemplate restTemplate;
 
     @Value("${msa.user.service.url}")
     private String msaUserServiceUrl;
 
-    public PostService(PostRepository postRepository, FileUploadService fileUploadService) {
+    public PostService(PostRepository postRepository, FileUploadService fileUploadService, RestTemplate restTemplate) {
         this.postRepository = postRepository;
         this.fileUploadService = fileUploadService;
+        this.restTemplate = restTemplate;
     }
 
     // 게시글 생성 (연예인 전용)
     public Post createPost(Post post, String userEmail, MultipartFile image) throws IOException {
+        logger.debug("Creating post with title: {}, content: {}, userEmail: {}", post.getTitle(), post.getContent(), userEmail);
         Long userId = getUserIdFromEmail(userEmail);
         if (!isCelebrity(userId)) {
             throw new UnauthorizedException("Only celebrities can create posts");
@@ -92,9 +94,14 @@ public class PostService {
 
     // 연예인 권한 확인 (msa-user 서비스와 통신 필요)
     private boolean isCelebrity(Long userId) {
-        String url = msaUserServiceUrl + "/user/celebrity/" + userId;
-        ResponseEntity<Boolean> response = restTemplate.getForEntity(url, Boolean.class);
-        return Boolean.TRUE.equals(response.getBody());
+        try {
+            String url = msaUserServiceUrl + "/user/celebrity/" + userId;
+            ResponseEntity<Boolean> response = restTemplate.getForEntity(url, Boolean.class);
+            return Boolean.TRUE.equals(response.getBody());
+        } catch (Exception e) {
+            System.err.println("Error checking celebrity status: " + e.getMessage());
+            return false;
+        }
     }
 
     // 이메일로 사용자 ID 조회 (msa-user 서비스와 통신)
