@@ -9,5 +9,5 @@ public class UserDto {
     private String email;
     private String userName;
     private String password;
-    private String roles = "ROLE-STAR, ROLE-FAN";
+    private String roles = "ROLE-STAR";
 }

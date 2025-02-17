@@ -17,8 +17,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         // 게시글 생성, 수정, 삭제는 인증된 사용자만 접근 가능
-                        .requestMatchers("/api/posts/create", "/api/posts/{id}/**").authenticated()
-                        //.hasRole("STAR")
+                        .requestMatchers("/api/posts/create", "/api/posts/{id}/**").hasRole("STAR")
                         // 댓글 및 좋아요 기능은 인증된 사용자만 접근 가능
                         .requestMatchers("/api/comments/**", "/api/hearts/**").authenticated()
                         // 기타 요청은 모두 허용
@@ -27,3 +26,4 @@ public class SecurityConfig {
                 .build();
     }
 }
+

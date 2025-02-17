@@ -40,7 +40,6 @@ public class AuthService {
             response.addHeader("RefreshToken", refreshToken);
             response.addHeader("AccessToken", accessToken);
             response.addHeader("X-Auth-User", email);
-            response.addHeader("X-Auth-Role", "ROLE_STAR");
 
         } catch (Exception e) {
             System.out.println("로그인시 오류 발생" + e.getMessage());
