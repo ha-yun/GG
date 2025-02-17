@@ -6,13 +6,9 @@ import com.example.msauserdemo.repository.UserRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 
 @Service
 public class UserService {
@@ -24,6 +20,14 @@ public class UserService {
     private RedisTemplate<String, Object> redisTemplate;
 //    @Autowired
 //    private JavaMailSenderImpl mailSender;
+
+    // ✅ 이메일을 기반으로 User 조회
+    public UserDto findByEmail(String email) {
+        UserEntity user = userRepository.findByEmail(email) // DB에서 User 찾기
+                .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다: " + email));
+
+        return new UserDto(user.getEmail(), user.getRoles(), user.getUsername()); // ✅ UserDto로 변환 후 반환
+    }
 
     public void createUser(@Valid UserDto userDto) {
         if( userDto.getEmail() == null || userDto.getEmail().isEmpty() ) {
@@ -43,8 +47,8 @@ public class UserService {
                 .email(userDto.getEmail())
                 .userName(userDto.getUserName())
                 .password(passwordEncoder.encode(userDto.getPassword()))
-                .roles(userDto.getRoles())
-                .enable(false)
+                .roles(userDto.getRoles()) // 사용자 선택 값 저장
+                .enable(false) // 이메일 인증 전
                 .build();
 
         userRepository.save(userEntity);

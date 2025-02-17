@@ -15,4 +15,9 @@ public class LiveMessageDto {
         this.role = role;
         this.message = message;
     }
+
+    public String getToken() {
+        return username + ":" + role;
+
+    }
 }

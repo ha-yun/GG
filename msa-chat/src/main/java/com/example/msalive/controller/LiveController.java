@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@RequestMapping("/live")
+@RequestMapping("/chat")
 public class LiveController {
     private final LiveProducer liveProducer;
 

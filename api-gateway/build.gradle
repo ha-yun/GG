@@ -34,7 +34,6 @@ dependencies {
 
     // oAuth2에서 자원관리용도, JWT 인증처리시 보안 강화 용도 활용할 수 있음
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
-
     // 스프링 시큐리티
     implementation 'org.springframework.boot:spring-boot-starter-security'
 

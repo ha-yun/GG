@@ -108,8 +108,8 @@ services:
       - all_dir_network
   
   msa-live:
-    build: ./msa-live
-    container_name: msa-live
+    build: ./msa-chat
+    container_name: msa-chat
     depends_on:
       - eureka-server
       - kafka

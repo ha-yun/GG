@@ -9,6 +9,12 @@ public class UserDto {
     private String email;
     private String userName;
     private String password;
-//    private String roles = "ROLE-STAR, ROLE-FAN";
     private String roles;
+
+    public UserDto(String email, String roles, String username) {
+        this.email = email;
+        this.roles = roles;
+        this.userName = username;
+
+    }
 }
