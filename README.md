@@ -13,6 +13,8 @@
 
 
 #### docker-compose 테스트
+- application.properties, redisconfig 수정
+
 ```
     docker-compose up --build
 ```

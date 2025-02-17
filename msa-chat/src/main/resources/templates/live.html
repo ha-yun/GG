@@ -139,7 +139,7 @@
   }
 
   function loadLiveHistory() {
-    fetch('http://localhost:8085/api/live/history', {
+    fetch('http://localhost:8080/api/live/history', {
       headers: { "Authorization": "Bearer " + localStorage.getItem("jwtToken") }
     })
             .then(response => {
