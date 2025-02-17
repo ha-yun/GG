@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>실시간 채팅</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.1/sockjs.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+  <style>
+    body { font-family: Arial, sans-serif; }
+    #chat-box { width: 100%; height: 300px; border: 1px solid #ccc; overflow-y: scroll; padding: 10px; margin-bottom: 10px; }
+    input { margin: 5px; padding: 5px; }
+    button { padding: 5px 10px; cursor: pointer; }
+  </style>
+</head>
+<body onload="connect()">
+<h2>실시간 채팅</h2>
+<div id="chat-box"></div>
+
+<input type="text" id="username" placeholder="이름 입력">
+<input type="text" id="role" placeholder="역할 입력 (예: 관리자, 사용자)">
+<input type="text" id="message" placeholder="메시지 입력">
+<button onclick="sendMessage()">전송</button>
+
+<script>
+  var stompClient = null;
+  var currentUser = { username: "", role: "" };
+
+  function connect() {
+    var socket = new SockJS('/ws');
+    stompClient = Stomp.over(socket);
+    stompClient.connect({}, function (frame) {
+      console.log('✅ WebSocket Connected: ' + frame);
+
+      stompClient.subscribe('/topic/messages', function (Message) {
+        var msg = JSON.parse(Message.body);
+        showMessage(msg.username, msg.role, msg.message);
+      });
+
+      // 🔥 서버에서 필터링된 채팅 내역 불러오기
+      loadLiveHistory();
+    }, function(error) {
+      console.log('🚨 WebSocket 연결 실패: ' + error);
+    });
+  }
+
+  function sendMessage() {
+    var username = document.getElementById("username").value;
+    var role = document.getElementById("role").value;
+    var message = document.getElementById("message").value;
+
+    if (!username || !role || !message) {
+      alert("이름, 역할, 메시지를 모두 입력하세요!");
+      return;
+    }
+
+    // 현재 사용자 정보 저장
+    currentUser.username = username;
+    currentUser.role = role;
+
+    stompClient.send("/app/send", {}, JSON.stringify({
+      username: username,
+      role: role,
+      message: message
+    }));
+
+    document.getElementById("message").value = "";
+  }
+
+  function showMessage(username, role, message) {
+    var chatBox = document.getElementById("chat-box");
+
+    // 🔥 "fan"인 경우: 본인 메시지 + "star" 메시지만 보이도록 필터링
+    if (currentUser.role === "fan" && username !== currentUser.username && role !== "star") {
+      return; // 필터링된 메시지는 표시하지 않음
+    }
+
+    var newMessage = document.createElement("p");
+    newMessage.innerHTML = `<strong>[${role}] ${username}:</strong> ${message}`;
+    chatBox.appendChild(newMessage);
+    chatBox.scrollTop = chatBox.scrollHeight;
+  }
+
+  function loadLiveHistory() {
+    fetch(`/api/live/history?username=${currentUser.username}&role=${currentUser.role}`)
+            .then(response => response.json())
+            .then(data => {
+              data.forEach(live => {
+                showMessage(live.username, live.role, live.message);
+              });
+            })
+            .catch(error => console.error('❌ Error loading 라이브 history:', error));
+  }
+</script>
+
+</body>
+</html>
