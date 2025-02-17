@@ -29,8 +29,10 @@ public class ApiGatewayApplication {
                         r -> r.path("/user/**").uri("lb://msa-user-demo")) // /user/**
                 .route("msa-starboard", // msa-starboard 라우팅 추가
                         r -> r.path("/api/posts").uri("lb://msa-starboard")) // /api/posts/**
-                .route("msa-live",
-                        r -> r.path("/live").uri("lb://msa-live"))
+                .route("msa-chat",
+                        r -> r.path("/api/live/**").uri("lb://msa-chat"))
+                .route("msa-chat",
+                        r -> r.path("/chat/**").uri("lb://msa-chat"))
                 .route("products",
                         r -> r.path("/pdts/**").uri("lb://products"))
                 .route("products",
