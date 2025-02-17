@@ -7,6 +7,6 @@ import java.util.List;
 
 public interface PostRepository extends JpaRepository<Post, Long> {
     List<Post> findByTitleContaining(String keyword); // 제목으로 게시글 검색
+
     List<Post> findByContentContaining(String keyword); // 내용으로 게시글 검색
-    List<Post> findByTitleContainingOrContentContaining(String titleKeyword, String contentKeyword); // 제목 또는 내용으로 게시글 검색
 }

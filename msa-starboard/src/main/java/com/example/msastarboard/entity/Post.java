@@ -26,8 +26,7 @@ public class Post {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String content; // 게시글 내용
 
-    @Column(name = "content_url")
-    private String contentUrl; // 이미지 URL
+    private String imageUrl; // 이미지 URL
 
     @Column(nullable = false)
     private Long authorId; // 작성자 ID (msa-user에서 가져옴)
