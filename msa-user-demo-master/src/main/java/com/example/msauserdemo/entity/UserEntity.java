@@ -1,6 +1,5 @@
 package com.example.msauserdemo.entity;
 
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -12,12 +11,9 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-
-import java.io.Serializable;
+import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "User")
@@ -34,8 +30,6 @@ public class UserEntity implements UserDetails {
     private String roles;
     private boolean enable; // 이메일 인증 여부
 
-
-
     @Builder
     public UserEntity(String email, String userName, String password, String roles, boolean enable) {
         this.email = email;
@@ -47,7 +41,10 @@ public class UserEntity implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singletonList(new SimpleGrantedAuthority("ROLE_STAR, ROLE_FAN"));
+        return Arrays.stream(roles.split(","))
+                .map(String::trim)
+                .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
+                .collect(Collectors.toList());
     }
 
     @Override
