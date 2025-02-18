@@ -16,6 +16,7 @@ public class OrderController {
         this.orderService = orderService;
     }
 
+
     // 내 주문 목록 조회 (이메일 기반)
     @GetMapping
     public List<Order> getMyOrders(@RequestHeader("X-Auth-User") String userEmail) {
@@ -28,9 +29,4 @@ public class OrderController {
         return orderService.getOrderById(orderId);
     }
 
-    // 전체 주문 목록 조회 (관리자용)
-    @GetMapping("/all")
-    public List<Order> getAllOrders() {
-        return orderService.getAllOrders();
-    }
 }
