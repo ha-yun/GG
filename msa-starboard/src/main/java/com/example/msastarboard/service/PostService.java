@@ -53,7 +53,7 @@ public class PostService {
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Post not found"));
 
-        if (!post.getAuthorId().equals(userId)) {
+        if (!post.getAuthorId().equals(userEmail)) {
             throw new UnauthorizedException("You are not authorized to delete this post");
         }
         postRepository.deleteById(id);
@@ -75,11 +75,11 @@ public class PostService {
 
     // 게시글 수정 (연예인 전용)
     public Post updatePost(Long id, Post updatedPost, String userEmail, MultipartFile image) throws IOException {
-        Long userId = getUserIdFromEmail(userEmail);
         Post existingPost = postRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Post not found"));
 
-        if (!existingPost.getAuthorId().equals(userId)) {
+        Long userId = getUserIdFromEmail(userEmail);
+        if (!existingPost.getAuthorId().equals(String.valueOf(userId))) {
             throw new UnauthorizedException("You are not authorized to update this post");
         }
 

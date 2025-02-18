@@ -20,7 +20,7 @@ public class FileUploadService {
             Files.createDirectory(root);
         }
 
-        String filename = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
+        String filename = UUID.randomUUID() + "_" + file.getOriginalFilename();
         Files.copy(file.getInputStream(), this.root.resolve(filename));
 
         return "/uploads/" + filename;

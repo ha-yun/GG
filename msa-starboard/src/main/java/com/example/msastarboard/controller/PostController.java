@@ -1,6 +1,8 @@
 package com.example.msastarboard.controller;
 
 import com.example.msastarboard.entity.Post;
+import com.example.msastarboard.exception.ResourceNotFoundException;
+import com.example.msastarboard.exception.UnauthorizedException;
 import com.example.msastarboard.service.PostService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,8 +18,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/posts")
-public class
-PostController {
+public class PostController {
 
     private final PostService postService;
 
@@ -66,13 +67,23 @@ PostController {
 
     // 게시글 수정 (연예인 전용)
     @PutMapping("/{id}")
-    public ResponseEntity<Post> updatePost(@PathVariable Long id,
-                                           @RequestPart("post") String postJson,
-                                           @RequestPart(value = "image", required = false) MultipartFile image,
-                                           @RequestHeader("X-Auth-User") String userEmail) throws IOException {
-        ObjectMapper objectMapper = new ObjectMapper();
-        Post updatedPost = objectMapper.readValue(postJson, Post.class);
-        Post result = postService.updatePost(id, updatedPost, userEmail, image);
-        return new ResponseEntity<>(result, HttpStatus.OK);
+    public ResponseEntity<?> updatePost(@PathVariable Long id,
+                                        @RequestPart("post") String postJson,
+                                        @RequestPart(value = "image", required = false) MultipartFile image,
+                                        @RequestHeader("X-Auth-User") String userEmail) {
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            Post updatedPost = objectMapper.readValue(postJson, Post.class);
+            Post result = postService.updatePost(id, updatedPost, userEmail, image);
+            return new ResponseEntity<>(result, HttpStatus.OK);
+        } catch (UnauthorizedException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.FORBIDDEN);
+        } catch (ResourceNotFoundException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (IOException e) {
+            return new ResponseEntity<>("Error processing image", HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            return new ResponseEntity<>("An unexpected error occurred", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }

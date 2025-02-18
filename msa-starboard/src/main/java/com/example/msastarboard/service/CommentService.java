@@ -29,8 +29,7 @@ public class CommentService {
     public Comment createComment(Comment comment, String userEmail) {
 
         Long userId = postService.getUserIdFromEmail(userEmail);
-        comment.setAuthorId(userId);
-
+        comment.setAuthorId(userEmail);
         return commentRepository.save(comment);
     }
 
@@ -41,7 +40,7 @@ public class CommentService {
         Comment comment = commentRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Comment not found"));
 
-        if (!comment.getAuthorId().equals(userId)) {
+        if (!comment.getAuthorId().equals(userEmail)) {
             throw new UnauthorizedException("You are not authorized to delete this comment");
         }
         commentRepository.deleteById(id);
@@ -54,7 +53,7 @@ public class CommentService {
         Comment existingComment = commentRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Comment not found"));
 
-        if (!existingComment.getAuthorId().equals(userId)) {
+        if (!existingComment.getAuthorId().equals(userEmail)) {
             throw new UnauthorizedException("You are not authorized to update this comment");
         }
 

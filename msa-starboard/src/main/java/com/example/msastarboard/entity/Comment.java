@@ -28,7 +28,7 @@ public class Comment {
     private Post post; // 댓글이 달린 게시글
 
     @Column(nullable = false)
-    private Long authorId; // 작성자 ID (msa-user에서 가져옴)
+    private String authorId; // 작성자 ID (msa-user에서 가져옴)
 
     @CreatedDate
     private LocalDateTime createdAt; // 댓글 생성 시간
