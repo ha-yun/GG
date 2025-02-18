@@ -36,7 +36,4 @@ out/
 
 ### VS Code ###
 .vscode/
-<<<<<<< HEAD
 .DS_Store
-=======
->>>>>>> 755c29b (product 파일 추가)
