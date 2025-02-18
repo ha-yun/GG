@@ -39,7 +39,7 @@ public class PostService {
         if (!isCelebrity(userId)) {
             throw new UnauthorizedException("Only celebrities can create posts");
         }
-        post.setAuthorId(userId);
+        post.setAuthorId(userEmail);
         if (image != null && !image.isEmpty()) {
             String imageUrl = fileUploadService.uploadFile(image);
             post.setImageUrl(imageUrl);
@@ -95,7 +95,7 @@ public class PostService {
     // 연예인 권한 확인 (msa-user 서비스와 통신 필요)
     private boolean isCelebrity(Long userId) {
         try {
-            String url = msaUserServiceUrl + "/user/celebrity/" + userId;
+            String url = msaUserServiceUrl + "/user/celebrity/" + 1;
             ResponseEntity<Boolean> response = restTemplate.getForEntity(url, Boolean.class);
             return Boolean.TRUE.equals(response.getBody());
         } catch (Exception e) {

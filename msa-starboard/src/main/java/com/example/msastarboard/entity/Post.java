@@ -29,7 +29,7 @@ public class Post {
     private String imageUrl; // 이미지 URL
 
     @Column(nullable = false)
-    private Long authorId; // 작성자 ID (msa-user에서 가져옴)
+    private String authorId; // 작성자 ID (msa-user에서 가져옴)
 
     @CreatedDate
     private LocalDateTime createdAt; // 게시글 생성 시간
