@@ -32,7 +32,4 @@ public class Comment {
 
     @CreatedDate
     private LocalDateTime createdAt; // 댓글 생성 시간
-
-    @LastModifiedDate
-    private LocalDateTime updatedAt; // 댓글 수정 시간
 }

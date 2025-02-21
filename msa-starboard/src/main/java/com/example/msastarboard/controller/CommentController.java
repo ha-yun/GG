@@ -31,13 +31,4 @@ public class CommentController {
         commentService.deleteComment(id, userEmail);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
-
-    // 댓글 수정
-    @PutMapping("/{id}")
-    public ResponseEntity<Comment> updateComment(@PathVariable Long id,
-                                                 @RequestBody Comment comment,
-                                                 @RequestHeader("X-Auth-User") String userEmail) {
-        Comment updatedComment = commentService.updateComment(id, comment, userEmail);
-        return new ResponseEntity<>(updatedComment, HttpStatus.OK);
-    }
 }

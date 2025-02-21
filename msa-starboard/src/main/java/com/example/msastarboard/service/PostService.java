@@ -73,25 +73,6 @@ public class PostService {
         };
     }
 
-    // 게시글 수정 (연예인 전용)
-    public Post updatePost(Long id, Post updatedPost, String userEmail, MultipartFile image) throws IOException {
-        Post existingPost = postRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Post not found"));
-
-        Long userId = getUserIdFromEmail(userEmail);
-        if (!existingPost.getAuthorId().equals(String.valueOf(userId))) {
-            throw new UnauthorizedException("You are not authorized to update this post");
-        }
-
-        existingPost.setTitle(updatedPost.getTitle());
-        existingPost.setContent(updatedPost.getContent());
-        if (image != null && !image.isEmpty()) {
-            String imageUrl = fileUploadService.uploadFile(image);
-            existingPost.setImageUrl(imageUrl);
-        }
-        return postRepository.save(existingPost);
-    }
-
     // 연예인 권한 확인 (msa-user 서비스와 통신 필요)
     private boolean isCelebrity(Long userId) {
         try {
