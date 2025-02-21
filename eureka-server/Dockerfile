@@ -1,5 +1,5 @@
 # 스테이지 1: 빌드용 Gradle 컨테이너
-FROM gradle:7.6-jdk AS builder
+FROM gradle:jdk17 AS builder
 
 # 워킹 디렉토리(리눅스 기반 설정) 지정
 WORKDIR /app

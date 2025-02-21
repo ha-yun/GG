@@ -3,7 +3,7 @@
 # on:
 #   push:
 #     branches:
-#       - deploy-test
+#       - main
 
 # jobs:
 #   docker-cicd:
@@ -16,9 +16,24 @@
 #         run: |
 #             pwd
 #             ls
-      
-#       - name: 도커 작업을 진행하기 위한 액션 적용
-#         uses: docker/setup-buildx-action@v3
-      
-#       - name: 도커 허브 로그인
-#         run: echo "${{ secrets.HUB_DOCKER_TOKEN }}" | docker login -u "${{ secrets.HUB_DOCKER_USERNAME }}" --password-stdin
+#       - name: Deploy to EC2
+#         uses: appleboy/ssh-action@master
+#         with:
+#           host: ${{ secrets.AWS_HOST }}
+#           username: ${{ secrets.AWS_USER }}
+#           key: ${{ secrets.AWS_PRIVATE_KEY }}
+#           script: |
+#             set -e  # 오류 발생 시 중지
+
+#             # 1️⃣ 기존 컨테이너 중지 및 삭제
+#             cd ~/app || mkdir ~/app && cd ~/app
+#             docker compose down
+
+#             # 2️⃣ 최신 코드 가져오기
+#             git pull origin main
+
+#             # 3️⃣ Docker Compose 실행
+#             docker compose up --build -d
+
+#             # 4️⃣ 불필요한 이미지 정리
+#             docker image prune -af
