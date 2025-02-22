@@ -52,7 +52,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(cors -> cors.configurationSource(corsConfigurationSource())) // ✅ CORS 활성화
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/login", "/user/signup").permitAll() // 로그인 & WebSocket 허용
+                        .requestMatchers("/auth/**", "/user/**").permitAll() // 로그인 & WebSocket 허용
                         .requestMatchers(request -> "OPTIONS".equals(request.getMethod())).permitAll() // ✅ Preflight 요청 허용
                         .anyRequest().authenticated()
                 )

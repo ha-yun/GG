@@ -157,3 +157,21 @@ services:
       - "8082:8082"
     networks:
       - all_dir_network
+
+  msa-starboard:
+    build: ./msa-starboard
+    container_name: msa-starboard
+    depends_on:
+      - eureka-server
+      - ggdatabase
+      - kafka
+      - redis
+      - msa-user-demo
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
+      - SPRING_REDIS_HOST=redis
+      - SPRING_REDIS_PORT=6379
+    ports:
+      - "8083:8083"
+    networks:
+      - all_dir_network
