@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>실시간 채팅</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.1/sockjs.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+  <style>
+    body { font-family: Arial, sans-serif; }
+    #chat-box { width: 100%; height: 300px; border: 1px solid #ccc; overflow-y: scroll; padding: 10px; margin-bottom: 10px; }
+    input, select { margin: 5px; padding: 5px; }
+    button { padding: 5px 10px; cursor: pointer; }
+  </style>
+</head>
+<body>
+<h2>실시간 채팅</h2>
+
+<!-- 🔥 로그인 UI -->
+<input type="email" id="email" placeholder="이메일 입력">
+<input type="password" id="password" placeholder="비밀번호 입력">
+<select id="role">
+  <option value="fan">Fan</option>
+  <option value="star">Star</option>
+</select>
+<button id="login-btn">로그인</button>
+<button onclick="logout()">로그아웃</button>
+
+<hr>
+
+<!-- 🔥 채팅 UI -->
+<div id="chat-box"></div>
+<input type="text" id="message" placeholder="메시지 입력">
+<button onclick="sendMessage()">전송</button>
+
+<script>
+  var stompClient = null;
+
+  function connectWebSocket() {
+    var socket = new SockJS('http://localhost:8085/ws');
+    stompClient = Stomp.over(socket);
+
+    // ✅ WebSocket 연결 시 JWT 토큰을 포함
+    var token = localStorage.getItem("jwtToken");
+    stompClient.connect({ Authorization: "Bearer " + token }, function (frame) {
+      console.log('✅ WebSocket Connected:', frame);
+
+      // ✅ 메시지 수신 구독
+      stompClient.subscribe('/topic/messages', function (Message) {
+        var msg = JSON.parse(Message.body);
+        console.log("📩 WebSocket 수신 메시지:", msg);
+        showMessage(msg.username, msg.role, msg.message);
+      });
+
+      // ✅ 채팅 기록 불러오기
+      loadLiveHistory();
+    }, function(error) {
+      console.log('🚨 WebSocket 연결 실패:', error);
+    });
+  }
+
+  function sendMessage() {
+    var message = document.getElementById("message").value;
+    var token = localStorage.getItem("jwtToken");
+    var username = localStorage.getItem("username");
+    var role = localStorage.getItem("userRole");
+
+    if (!message.trim()) {
+      alert("메시지를 입력하세요!");
+      return;
+    }
+
+    let payload = {
+      username: username,
+      role: role,
+      message: message,
+      token: token // ✅ 메시지에 JWT 토큰 포함
+    };
+
+    console.log("📩 전송하는 메시지:", payload);
+
+    stompClient.send("/app/send", {}, JSON.stringify(payload));
+
+    document.getElementById("message").value = "";
+  }
+
+  function login() {
+    var email = document.getElementById("email").value;
+    var password = document.getElementById("password").value;
+    var role = document.getElementById("role").value;
+
+    if (!email || !password || !role) {
+      alert("이메일, 비밀번호, 역할을 입력하세요.");
+      return;
+    }
+    fetch("http://localhost:8080/auth/login", {
+      method: "POST",
+      mode: "cors",
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+      },
+      body: JSON.stringify({ email, password })
+    })
+
+            .then(response => response.json())
+            .then(data => {
+              console.log("✅ 로그인 응답:", data);
+              if (data.accessToken) {
+                localStorage.setItem("jwtToken", data.accessToken);
+                localStorage.setItem("username", email);
+                localStorage.setItem("userRole", role);
+                alert("로그인 성공!");
+                connectWebSocket();  // ✅ 로그인 후 WebSocket 연결
+              } else {
+                alert("로그인 실패: " + data.message);
+              }
+            })
+            .catch(error => {
+              console.error("🚨 로그인 오류:", error);
+              alert("서버 오류 발생!");
+            });
+
+  }
+
+  function logout() {
+    localStorage.removeItem("jwtToken");
+    localStorage.removeItem("username");
+    localStorage.removeItem("userRole");
+    alert("로그아웃 완료");
+  }
+
+  function showMessage(username, role, message) {
+    var chatBox = document.getElementById("chat-box");
+    var newMessage = document.createElement("p");
+    newMessage.innerHTML = `<strong>[${role}] ${username}:</strong> ${message}`;
+    chatBox.appendChild(newMessage);
+    chatBox.scrollTop = chatBox.scrollHeight;
+  }
+
+  function loadLiveHistory() {
+    fetch('http://localhost:8080/api/live/history', {
+      headers: { "Authorization": "Bearer " + localStorage.getItem("jwtToken") }
+    })
+            .then(response => {
+              console.log("🔄 서버 응답 상태:", response.status);
+              return response.json();
+            })
+            .then(data => {
+              console.log("📜 채팅 기록 불러오기:", data);
+              if (!data || data.length === 0) {
+                console.warn("❌ 채팅 기록이 비어있음!");
+              }
+              data.forEach(live => {
+                showMessage(live.username, live.role, live.message);
+              });
+            })
+            .catch(error => console.error('🚨 채팅 기록 불러오기 오류:', error));
+  }
+
+  document.getElementById("login-btn").addEventListener("click", login);
+</script>
+</body>
+</html>
