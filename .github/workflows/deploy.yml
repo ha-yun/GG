@@ -32,16 +32,16 @@ jobs:
         run: docker-compose build
 
       - name: 도커 허브에 이미지 빌드 확인
-        run: docker images | grep eureka-server
+        run: docker images
 
       - name: 도커 이미지 태깅
         run: |
-          docker tag eureka-server haroo/eureka-server:latest
-          docker tag api-gateway haroo/api-gateway:latest
-          docker tag msa-chat haroo/msa-chat:latest
-          docker tag msa-user-demo haroo/msa-user-demo:latest
-          docker tag products haroo/products:latest
-          docker tag msa-starboard haroo/msa-starboard:latest
+          docker tag gg_eureka-server haroo/eureka-server:latest
+          docker tag gg_api-gateway haroo/api-gateway:latest
+          docker tag gg_msa-chat haroo/msa-chat:latest
+          docker tag gg_msa-user-demo haroo/msa-user-demo:latest
+          docker tag gg_products haroo/products:latest
+          docker tag gg_msa-starboard haroo/msa-starboard:latest
 
       - name: 도커 허브에 이미지 푸시
         # run: docker-compose push
