@@ -5,7 +5,11 @@ FROM gradle:jdk17 AS builder
 WORKDIR /app
 
 # 호스트 OS에서 백엔드 원소스 전체 카피
-COPY . .
+# COPY . .
+COPY build.gradle settings.gradle ./
+COPY src/ src/
+COPY gradlew ./
+COPY gradle/ gradle/
 
 # gradlew 실행 권한 부여 ✅
 RUN chmod +x ./gradlew
