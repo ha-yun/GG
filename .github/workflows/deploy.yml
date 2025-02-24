@@ -8,6 +8,7 @@ on:
 jobs:
   docker-cicd:
     runs-on: ubuntu-latest
+    timeout-minutes: 15  # 빌드 타임아웃을 15분으로 증가
     steps:
       - name: 소스코드 체크아웃
         uses: actions/checkout@v4
