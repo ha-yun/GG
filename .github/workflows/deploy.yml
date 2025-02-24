@@ -38,7 +38,7 @@ jobs:
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_KEY }}
           source: 
-            docker-compose.yml
+            docker-compose.prod.yml
           target: /home/ubuntu
 
       - name: ec2에 SSH 접속 -> 도커 컴포즈 가동
