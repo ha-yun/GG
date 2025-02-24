@@ -12,7 +12,7 @@ networks:                 # 네트워크 지정
 services:      
   eureka-server: # 서비스명
     build: ./eureka-server
-    image: haroo/eureka-server:latest  # 빌드된 이미지를 이 이름으로 태깅
+    # image: haroo/eureka-server:latest  # 빌드된 이미지를 이 이름으로 태깅
     container_name: eureka-server
     ports:
       - "8761:8761"
@@ -93,7 +93,7 @@ services:
 
   api-gateway:
     build: ./api-gateway
-    image: haroo/api-gateway:latest  # 빌드된 이미지를 이 이름으로 태깅
+    # image: haroo/api-gateway:latest  # 빌드된 이미지를 이 이름으로 태깅
     container_name: api-gateway
     depends_on:
       - eureka-server
@@ -111,7 +111,7 @@ services:
   
   msa-live:
     build: ./msa-chat
-    image: haroo/msa-chat:latest  # 빌드된 이미지를 이 이름으로 태깅
+    # image: haroo/msa-chat:latest  # 빌드된 이미지를 이 이름으로 태깅
     container_name: msa-chat
     depends_on:
       - eureka-server
@@ -129,7 +129,7 @@ services:
   
   msa-user-demo:
     build: ./msa-user-demo
-    image: haroo/msa-user-demo:latest  # 빌드된 이미지를 이 이름으로 태깅
+    # image: haroo/msa-user-demo:latest  # 빌드된 이미지를 이 이름으로 태깅
     container_name: msa-user-demo
     depends_on:
       - eureka-server
@@ -147,7 +147,7 @@ services:
 
   products:
     build: ./products
-    image: haroo/products:latest  # 빌드된 이미지를 이 이름으로 태깅
+    # image: haroo/products:latest  # 빌드된 이미지를 이 이름으로 태깅
     container_name: products
     depends_on:
       - eureka-server
@@ -165,7 +165,7 @@ services:
 
   msa-starboard:
     build: ./msa-starboard
-    image: haroo/msa-starboard:latest  # 빌드된 이미지를 이 이름으로 태깅
+    # image: haroo/msa-starboard:latest  # 빌드된 이미지를 이 이름으로 태깅
     container_name: msa-starboard
     depends_on:
       - eureka-server

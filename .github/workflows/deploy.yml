@@ -19,7 +19,7 @@ jobs:
         run: |
             pwd
             ls
-            
+
       - name: Install Docker Compose
         run: |
           sudo apt-get update
@@ -39,7 +39,7 @@ jobs:
           docker tag eureka-server haroo/eureka-server:latest
           docker tag api-gateway haroo/api-gateway:latest
           docker tag msa-chat haroo/msa-chat:latest
-          docker tag msa-user-demo haroo/msa-user-demo:latest 
+          docker tag msa-user-demo haroo/msa-user-demo:latest
           docker tag products haroo/products:latest
           docker tag msa-starboard haroo/msa-starboard:latest
 
