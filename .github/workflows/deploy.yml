@@ -30,11 +30,18 @@ jobs:
       - name: 도커 허브에 이미지 빌드
         run: docker-compose build
 
-      - name: 도커 허브에 이미지 빌드
+      - name: 도커 허브에 이미지 빌드 확인
         run: docker images | grep eureka-server
 
       - name: 도커 허브에 이미지 푸시
-        run: docker-compose push
+        # run: docker-compose push
+        run: |
+          docker push haroo/eureka-server:latest
+          docker push haroo/api-gateway:latest
+          docker push haroo/msa-chat:latest
+          docker push haroo/msa-user-demo:latest 
+          docker push haroo/products:latest
+          docker push haroo/msa-starboard:latest
 
       - name: EC2 서버로 필요 파일 업로드
         uses: appleboy/scp-action@v0.1.7
