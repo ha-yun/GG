@@ -36,22 +36,22 @@ jobs:
 
       - name: 도커 이미지 태깅
         run: |
-          docker tag gg_eureka-server haroo/eureka-server:latest
-          docker tag gg_api-gateway haroo/api-gateway:latest
-          docker tag gg_msa-live haroo/msa-chat:latest
-          docker tag gg_msa-user-demo haroo/msa-user-demo:latest
-          docker tag gg_products haroo/products:latest
-          docker tag gg_msa-starboard haroo/msa-starboard:latest
+          docker tag gg_eureka-server harooo/eureka-server:latest
+          docker tag gg_api-gateway harooo/api-gateway:latest
+          docker tag gg_msa-live harooo/msa-chat:latest
+          docker tag gg_msa-user-demo harooo/msa-user-demo:latest
+          docker tag gg_products harooo/products:latest
+          docker tag gg_msa-starboard harooo/msa-starboard:latest
 
       - name: 도커 허브에 이미지 푸시
         # run: docker-compose push
         run: |
-          docker push haroo/eureka-server:latest
-          docker push haroo/api-gateway:latest
-          docker push haroo/msa-chat:latest
-          docker push haroo/msa-user-demo:latest 
-          docker push haroo/products:latest
-          docker push haroo/msa-starboard:latest
+          docker push harooo/eureka-server:latest
+          docker push harooo/api-gateway:latest
+          docker push harooo/msa-chat:latest
+          docker push harooo/msa-user-demo:latest 
+          docker push harooo/products:latest
+          docker push harooo/msa-starboard:latest
 
       - name: EC2 서버로 필요 파일 업로드
         uses: appleboy/scp-action@v0.1.7
