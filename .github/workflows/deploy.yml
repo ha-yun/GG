@@ -19,10 +19,15 @@ jobs:
         run: |
             pwd
             ls
+
       - name: Install Docker Compose
         run: |
           sudo apt-get update
           sudo apt-get install -y docker-compose
+          
+      # 도커 관련 액션 -> 도커 작업을 위한 환경
+      - name: 도커 작업을 진행하기 위한 액션 적용
+        uses: docker/setup-buildx-action@v3
 
       - name: 도커허브 로그인
         run: echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
