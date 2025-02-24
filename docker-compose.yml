@@ -179,8 +179,6 @@ services:
   nginx:                          # proxy
     image: nginx:latest
     container_name: nginx
-    volumes:                      # 연동하여, 설정내용을 컨테이너 내용에 덮어서 사용(연동)
-      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
     ports:
       - "80:80"
     networks:
