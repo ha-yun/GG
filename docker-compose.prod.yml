@@ -11,7 +11,7 @@ networks:                 # 네트워크 지정
 # 서비스 파일
 services:      
   eureka-server: # 서비스명
-    # image: haroo/eureka-server:latest
+    image: haroo/eureka-server:latest
     container_name: eureka-server
     ports:
       - "8761:8761"
@@ -70,7 +70,7 @@ services:
       - all_dir_network
 
   api-gateway:
-    # image: haroo/api-gateway:latest
+    image: haroo/api-gateway:latest
     container_name: api-gateway
     depends_on:
       - eureka-server
@@ -87,7 +87,7 @@ services:
       - all_dir_network
   
   msa-live:
-    # image: haroo/msa-chat:latest
+    image: haroo/msa-chat:latest
     container_name: msa-chat
     depends_on:
       - eureka-server
@@ -104,7 +104,7 @@ services:
       - all_dir_network
   
   msa-user-demo:
-    # image: haroo/msa-user-demo:latest
+    image: haroo/msa-user-demo:latest
     container_name: msa-user-demo
     depends_on:
       - eureka-server
@@ -121,7 +121,7 @@ services:
       - all_dir_network
 
   products:
-    # image: haroo/products:latest
+    image: haroo/products:latest
     container_name: products
     depends_on:
       - eureka-server
@@ -138,7 +138,7 @@ services:
       - all_dir_network
 
   msa-starboard:
-    # image: haroo/msa-starboard:latest
+    image: haroo/msa-starboard:latest
     container_name: msa-starboard
     depends_on:
       - eureka-server
