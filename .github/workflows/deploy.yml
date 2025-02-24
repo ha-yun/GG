@@ -27,7 +27,15 @@ jobs:
           script: |
             docker-compose down
 
-            cd /home/ubuntu/app
+            cd /home/ubuntu
+
+            if [ ! -d "app/.git" ]; then
+            echo "🚨 Git 저장소가 없음! 클론 시작..."
+            rm -rf app
+            git clone -b deploy-test https://github.com/ha-yun/GG.git app
+            cd app
+
+
             git pull origin deploy-test
             pwd
             ls -l
