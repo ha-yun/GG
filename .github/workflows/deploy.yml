@@ -48,10 +48,10 @@ jobs:
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_KEY }}
           script: |
-            docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" -p "${{ secrets.DOCKERHUB_PASSWORD }}" --password-stdin
-            docker-compose pull  # 최신 이미지 가져오기
-            docker-compose down  # 기존 컨테이너 중지
-            docker-compose up -d  # 새 컨테이너 실행
+            echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
+            sudo docker-compose pull  # 최신 이미지 가져오기
+            sudo docker-compose down  # 기존 컨테이너 중지
+            sudo docker-compose up -d  # 새 컨테이너 실행
           # script: |
           #   docker-compose down
 
