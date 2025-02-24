@@ -24,8 +24,11 @@ jobs:
           key: ${{ secrets.EC2_KEY }}
           script: |
             set -e
-            docker compose down
+            docker-compose down
 
             cd /home/ubuntu/app
+            pwd
+            ls
+
             git pull origin deploy-test
             docker-compose up -d --build
