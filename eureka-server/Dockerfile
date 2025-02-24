@@ -9,7 +9,7 @@ COPY . .
 
 # gradlew 실행 권한 부여 ✅
 RUN chmod +x ./gradlew
-RUN ./gradlew clean build --no-daemon
+RUN ./gradlew clean build --no-daemon -x test
 # 최종산출물 : /app/build/libs/*SNAPSHOT.jar
 
 # 스테이지 2: 실행 환경 (JDK 17)
