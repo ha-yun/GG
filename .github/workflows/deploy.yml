@@ -38,7 +38,7 @@ jobs:
         run: |
           docker tag gg_eureka-server haroo/eureka-server:latest
           docker tag gg_api-gateway haroo/api-gateway:latest
-          docker tag gg_msa-chat haroo/msa-chat:latest
+          docker tag gg_msa-live haroo/msa-chat:latest
           docker tag gg_msa-user-demo haroo/msa-user-demo:latest
           docker tag gg_products haroo/products:latest
           docker tag gg_msa-starboard haroo/msa-starboard:latest
