@@ -27,8 +27,8 @@ jobs:
             docker-compose down
 
             cd /home/ubuntu/app
-            pwd
-            ls
-
             git pull origin deploy-test
+            pwd
+            ls -l
+
             docker-compose up -d --build
