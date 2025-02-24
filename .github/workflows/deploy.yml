@@ -19,6 +19,14 @@ jobs:
         run: |
             pwd
             ls
+
+      - name: 도커허브 로그인
+        run: echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
+
+      - name: 도커 허브에 이미지 빌드
+        run: docker-compose build
+
+
       - name: ec2에 SSH 접속 -> 도커 컴포즈 가동
         uses: appleboy/ssh-action@v1.1.0
         with:
@@ -26,24 +34,29 @@ jobs:
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_KEY }}
           script: |
-            docker-compose down
+            docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" -p "${{ secrets.DOCKERHUB_PASSWORD }}"
+            docker-compose pull  # 최신 이미지 가져오기
+            docker-compose down  # 기존 컨테이너 중지
+            docker-compose up -d  # 새 컨테이너 실행
+          # script: |
+          #   docker-compose down
 
-            cd /home/ubuntu
+          #   cd /home/ubuntu
 
-            if [ ! -d "app/.git" ]; then
-              echo "🚨 Git 저장소가 없음! 클론 시작..."
-              rm -rf app
-              git clone -b deploy-test https://github.com/ha-yun/GG.git app
-            fi
+          #   if [ ! -d "app/.git" ]; then
+          #     echo "🚨 Git 저장소가 없음! 클론 시작..."
+          #     rm -rf app
+          #     git clone -b deploy-test https://github.com/ha-yun/GG.git app
+          #   fi
 
-            cd app
-            git pull origin deploy-test
-            pwd
-            ls -l
+          #   cd app
+          #   git pull origin deploy-test
+          #   pwd
+          #   ls -l
 
-            if [ ! -f "docker-compose.yml" ]; then
-              echo "❌ docker-compose.yml 파일이 없습니다!"
-              exit 1
-            fi
+          #   if [ ! -f "docker-compose.yml" ]; then
+          #     echo "❌ docker-compose.yml 파일이 없습니다!"
+          #     exit 1
+          #   fi
 
-            docker-compose up -d --build
+          #   docker-compose up -d --build
