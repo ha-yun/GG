@@ -25,7 +25,6 @@ jobs:
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_KEY }}
           script: |
-            set -e
             docker-compose down
 
             cd /home/ubuntu/app
