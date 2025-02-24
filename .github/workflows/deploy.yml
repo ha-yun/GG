@@ -30,6 +30,16 @@ jobs:
       - name: 도커 허브에 이미지 빌드
         run: docker-compose build
 
+      - name: EC2 서버로 필요 파일 업로드
+        uses: appleboy/scp-action@v0.1.7
+        # 업로드 대상이 n개이면 |로 구성해서 파일,파일, ... / 너무 많으면 압축해서 올리고 풀어버리는게 나음
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_KEY }}
+          source: 
+            docker-compose.yml
+          target: /home/ubuntu
 
       - name: ec2에 SSH 접속 -> 도커 컴포즈 가동
         uses: appleboy/ssh-action@v1.1.0
@@ -38,7 +48,7 @@ jobs:
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_KEY }}
           script: |
-            docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" -p "${{ secrets.DOCKERHUB_PASSWORD }}"
+            docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" -p "${{ secrets.DOCKERHUB_PASSWORD }}" --password-stdin
             docker-compose pull  # 최신 이미지 가져오기
             docker-compose down  # 기존 컨테이너 중지
             docker-compose up -d  # 새 컨테이너 실행
