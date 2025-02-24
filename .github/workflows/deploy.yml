@@ -29,6 +29,9 @@ jobs:
 
       - name: 도커 허브에 이미지 빌드
         run: docker-compose build
+        
+      - name: 도커 허브에 이미지 푸시
+        run: docker-compose push
 
       - name: EC2 서버로 필요 파일 업로드
         uses: appleboy/scp-action@v0.1.7
@@ -49,7 +52,7 @@ jobs:
           key: ${{ secrets.EC2_KEY }}
           script: |
             echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
-            sudo docker-compose -f docker-compose.prod.yml pull  # 최신 이미지 가져오기
+            sudo docker-compose pull  # 최신 이미지 가져오기
             sudo docker-compose down  # 기존 컨테이너 중지
             sudo docker-compose -f docker-compose.prod.yml up -d  # 새 컨테이너 실행
           # script: |
