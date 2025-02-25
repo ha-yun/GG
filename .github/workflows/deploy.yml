@@ -1,0 +1,99 @@
+name: Docker, Ci/Cd, EC2
+
+on:
+  push:
+    branches:
+      - deploy-test
+
+jobs:
+  docker-cicd:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15  # 빌드 타임아웃을 15분으로 증가
+    steps:
+      - name: 소스코드 체크아웃
+        uses: actions/checkout@v4
+        with:
+          ref: deploy-test  # 정확한 브랜치 체크아웃!
+  
+      - name: 현재 상황 체크
+        run: |
+            pwd
+            ls
+
+      - name: Install Docker Compose
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y docker-compose
+
+      - name: 도커허브 로그인
+        run: echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
+
+      - name: 도커 허브에 이미지 빌드
+        run: docker-compose build
+
+      - name: 도커 허브에 이미지 빌드 확인
+        run: docker images
+
+      # - name: 도커 이미지 태깅
+      #   run: |
+      #     docker tag gg_eureka-server harooo/eureka-server:latest
+      #     docker tag gg_api-gateway harooo/api-gateway:latest
+      #     docker tag gg_msa-live harooo/msa-chat:latest
+      #     docker tag gg_msa-user-demo harooo/msa-user-demo:latest
+      #     docker tag gg_products harooo/products:latest
+      #     docker tag gg_msa-starboard harooo/msa-starboard:latest
+
+      - name: 도커 허브에 이미지 푸시
+        run: docker-compose push
+        # run: |
+        #   docker push harooo/eureka-server:latest
+        #   docker push harooo/api-gateway:latest
+        #   docker push harooo/msa-chat:latest
+        #   docker push harooo/msa-user-demo:latest 
+        #   docker push harooo/products:latest
+        #   docker push harooo/msa-starboard:latest
+
+      - name: EC2 서버로 필요 파일 업로드
+        uses: appleboy/scp-action@v0.1.7
+        # 업로드 대상이 n개이면 |로 구성해서 파일,파일, ... / 너무 많으면 압축해서 올리고 풀어버리는게 나음
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_KEY }}
+          source: 
+            docker-compose.prod.yml
+          target: /home/ubuntu
+
+      - name: ec2에 SSH 접속 -> 도커 컴포즈 가동
+        uses: appleboy/ssh-action@v1.1.0
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_KEY }}
+          script: |
+            echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
+            sudo docker-compose pull  # 최신 이미지 가져오기
+            sudo docker-compose down  # 기존 컨테이너 중지
+            sudo docker-compose -f docker-compose.prod.yml up -d  # 새 컨테이너 실행
+          # script: |
+          #   docker-compose down
+
+          #   cd /home/ubuntu
+
+          #   if [ ! -d "app/.git" ]; then
+          #     echo "🚨 Git 저장소가 없음! 클론 시작..."
+          #     rm -rf app
+          #     git clone -b deploy-test https://github.com/ha-yun/GG.git app
+          #   fi
+
+          #   cd app
+          #   git pull origin deploy-test
+          #   pwd
+          #   ls -l
+
+          #   if [ ! -f "docker-compose.yml" ]; then
+          #     echo "❌ docker-compose.yml 파일이 없습니다!"
+          #     exit 1
+          #   fi
+
+          #   docker-compose up -d --build
