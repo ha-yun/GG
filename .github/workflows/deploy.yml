@@ -34,24 +34,8 @@ jobs:
       - name: 도커 허브에 이미지 빌드 확인
         run: docker images
 
-      # - name: 도커 이미지 태깅
-      #   run: |
-      #     docker tag gg_eureka-server harooo/eureka-server:latest
-      #     docker tag gg_api-gateway harooo/api-gateway:latest
-      #     docker tag gg_msa-live harooo/msa-chat:latest
-      #     docker tag gg_msa-user-demo harooo/msa-user-demo:latest
-      #     docker tag gg_products harooo/products:latest
-      #     docker tag gg_msa-starboard harooo/msa-starboard:latest
-
       - name: 도커 허브에 이미지 푸시
         run: docker-compose push
-        # run: |
-        #   docker push harooo/eureka-server:latest
-        #   docker push harooo/api-gateway:latest
-        #   docker push harooo/msa-chat:latest
-        #   docker push harooo/msa-user-demo:latest 
-        #   docker push harooo/products:latest
-        #   docker push harooo/msa-starboard:latest
 
       - name: EC2 서버로 필요 파일 업로드
         uses: appleboy/scp-action@v0.1.7
@@ -64,39 +48,19 @@ jobs:
             docker-compose.prod.yml
           target: /home/ubuntu
 
+  deploy:
+    runs-on: ubuntu-latest
+    needs: docker-cicd
+    steps:
       - name: ec2에 SSH 접속 -> 도커 컴포즈 가동
         uses: appleboy/ssh-action@v1.1.0
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_KEY }}
+          script_stop: true
+            # 이미지를 갱신하지는 않는다 -> 도커 컴포즈 파일에 기술하여 버전관리
+            # 이미지에 TAG를 기입하여 버전을 관리한다면 매번 갱신 가능(이미지)
           script: |
-            echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
-            
-            sudo docker volume prune -f
-
-            sudo docker-compose -f docker-compose.prod.yml pull
             sudo docker-compose -f docker-compose.prod.yml down
             sudo docker-compose -f docker-compose.prod.yml up -d 
-          # script: |
-          #   docker-compose down
-
-          #   cd /home/ubuntu
-
-          #   if [ ! -d "app/.git" ]; then
-          #     echo "🚨 Git 저장소가 없음! 클론 시작..."
-          #     rm -rf app
-          #     git clone -b deploy-test https://github.com/ha-yun/GG.git app
-          #   fi
-
-          #   cd app
-          #   git pull origin deploy-test
-          #   pwd
-          #   ls -l
-
-          #   if [ ! -f "docker-compose.yml" ]; then
-          #     echo "❌ docker-compose.yml 파일이 없습니다!"
-          #     exit 1
-          #   fi
-
-          #   docker-compose up -d --build
