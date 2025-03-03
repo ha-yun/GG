@@ -1,6 +1,7 @@
 # GG
-### 프로젝트명
+## 프로젝트명
 > 연예인 통합 서비스 StarLink (연예인 구독 전용 콘텐츠, 연예인 굿즈 스토어, 팬과 스타의 라이브 채팅)
+
 
 
 |서비스 | 상세 내용 |
@@ -13,6 +14,8 @@
 
 ---
 
+
+
 ## 개발 환경
 | 공통 | • 문서화 도구 : Notion <br> • 버전 관리 : Github <br> • 디자인 도구 : canva, Figma|
 |---|---|
@@ -22,6 +25,7 @@
 |버전관리|Git|
 |의존성| Thymeleaf, Lombok, Spring Boot DebTools, Spring Reactive Web, H2 Database, Spring Data JPA, Spring Security, Kafka, Redis, Eureka, JWT |
 |배포 및 환경|컨테이너 오케스트레이션: Docker Compose <br> 서버 환경: AWS EC2, GitHub Actions <br> 관리 서비스: MySQL, Redis, Kafka, Eureka (모두 Docker Compose로 실행)|
+
 
 
 ## 배포 과정
@@ -48,3 +52,72 @@
 </div>
 </details>
 
+
+
+## API 명세
+
+---
+
+### **msa-user | 회원가입, 로그인, 회원정보 관리**
+
+#### AuthController API
+
+| **Endpoint**   | **Method** | **Description**       | **Request Parameters**              | **Response**                                                                 |
+|-----------------|------------|-----------------------|--------------------------------------|-------------------------------------------------------------------------------|
+| `/auth/login`   | `POST`     | 사용자 로그인 처리    | `LoginReqDto` (JSON)                | `200 OK`: JWT 토큰, 이메일, 역할 반환`401 Unauthorized`: 로그인 실패 메시지 반환 |
+| `/auth/logout`  | `POST`     | 사용자 로그아웃 처리  | Header: `X-Auth-User`, `Authorization` | `200 OK`: `"로그아웃 성공"` 반환                                             |
+
+#### UserController API
+
+| **Endpoint**           | **Method** | **Description**                 | **Request Parameters**          | **Response**                                                                 |
+|-------------------------|------------|---------------------------------|----------------------------------|-------------------------------------------------------------------------------|
+| `/user/signup`          | `POST`     | 사용자 회원가입 처리            | `UserDto` (JSON)                | `200 OK`: `"회원가입 성공"` 반환                                              |
+| `/user/msa/login`       | `GET`      | 로그인 페이지 반환              | 없음                             | HTML 페이지 반환                                                              |
+| `/user/celebrity/{id}`  | `GET`      | 특정 사용자가 연예인인지 확인    | Path: `id` (Long)               | `200 OK`: Boolean 값 반환                                                     |
+| `/user/id`              | `GET`      | 이메일로 사용자 ID 조회          | Query: `email` (String)         | `200 OK`: 사용자 ID 반환`404 Not Found`: 사용자 없음                      |
+
+---
+
+### **msa-starboard | 구독 전용 게시판**
+
+#### PostController API
+
+| **Endpoint**           | **Method**  | **Description**                 | **Request Parameters**                    | **Response**                                                                 |
+|-------------------------|-------------|---------------------------------|-------------------------------------------|-------------------------------------------------------------------------------|
+| `/api/posts/create`     | `POST`      | 게시글 생성 (연예인 전용)       | FormData: `post`, Optional: `image`       | `201 Created`: 생성된 게시글 반환                                            |
+| `/api/posts/{id}`       | `DELETE`    | 게시글 삭제                    | Path: `id` (Long), Header: `X-Auth-User`  | `204 No Content`: 삭제 성공                                                  |
+| `/api/posts`            | `GET`       | 모든 게시글 조회                | 없음                                      | `200 OK`: 게시글 목록 반환                                                   |
+| `/api/posts/search`     | `GET`       | 게시글 검색                     | Query: `keyword`, Query: `filterType`     | `200 OK`: 검색된 게시글 목록 반환                                            |
+
+#### CommentController API
+
+| **Endpoint**           | **Method**  | **Description**                 | **Request Parameters**                    | **Response**                                                                 |
+|-------------------------|-------------|---------------------------------|-------------------------------------------|-------------------------------------------------------------------------------|
+| `/api/comments/create`  | `POST`      | 댓글 생성                      | Body: Comment 객체, Header: `X-Auth-User`  | `201 Created`: 생성된 댓글 반환                                              |
+| `/api/comments/{id}`    | `DELETE`    | 댓글 삭제                      | Path: `id`, Header: `X-Auth-User`         | `204 No Content`: 삭제 성공                                                  |
+
+---
+
+### **msa-products | 굿즈 스토어**
+
+#### ProductsController API
+
+| **Endpoint**             | **Method**  | **Description**                 | **Request Parameters**                    | **Response**                                                                 |
+|---------------------------|-------------|---------------------------------|-------------------------------------------|-------------------------------------------------------------------------------|
+| `/pdts`                 		| `GET`      	| 굿즈 전체 목록 조회            	| 없음                                     		| 굿즈 목록 반환 (`ProductDto`)                                                	|
+| `/pdts/detail/{pdtId}`  		| `GET`      	| 굿즈 상세 조회                 		| Path: pdtId                             		| 상세 정보 반환 (`ProductDetailDto`)                                           	|
+| `/pdts/search?keyword=` 		| `GET`      	| 키워드로 굿즈 검색             		| Query: keyword                          		| 검색된 굿즈 목록 반환                                                       	|
+| `/pdts/filter?minPrice=&maxPrice=`  	| GET     		| 가격 필터링                    			| Query: minPrice, maxPrice               		| 필터링된 굿즈 목록 반환                                                      |
+
+---
+
+### **msa-chat | 팬과 스타의 라이브 채팅**
+
+#### LiveController API
+
+| **Endpoint**           | **Method**  | **Description**                 | **Request Parameters**                    | **Response**                                                                 |
+|-------------------------|-------------|---------------------------------|-------------------------------------------|-------------------------------------------------------------------------------|
+| `/chat/send`            | WebSocket   | 실시간 채팅 메시지 전송         | JSON Body: LiveMessageDto 객체            | WebSocket 메시지 전송                                                        |
+| `/chat/history`         | `GET`       | 채팅 히스토리 조회              | 없음                                     			| 채팅 메시지 목록 반환 (`List`)                                |
+
+---
