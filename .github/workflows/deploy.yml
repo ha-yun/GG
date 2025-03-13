@@ -1,9 +1,9 @@
-name: Docker, Ci/Cd, EC2
+name: Docker, Ci/Cd
 
 on:
   push:
     branches:
-      - deploy-test
+      - koyeb-deploy
 
 jobs:
   docker-cicd:
@@ -36,31 +36,3 @@ jobs:
 
       - name: 도커 허브에 이미지 푸시
         run: docker-compose push
-
-      - name: EC2 서버로 필요 파일 업로드
-        uses: appleboy/scp-action@v0.1.7
-        # 업로드 대상이 n개이면 |로 구성해서 파일,파일, ... / 너무 많으면 압축해서 올리고 풀어버리는게 나음
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USERNAME }}
-          key: ${{ secrets.EC2_KEY }}
-          source: 
-            docker-compose.prod.yml
-          target: /home/ubuntu
-
-  deploy:
-    runs-on: ubuntu-latest
-    needs: docker-cicd
-    steps:
-      - name: ec2에 SSH 접속 -> 도커 컴포즈 가동
-        uses: appleboy/ssh-action@v1.1.0
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USERNAME }}
-          key: ${{ secrets.EC2_KEY }}
-          script_stop: true
-            # 이미지를 갱신하지는 않는다 -> 도커 컴포즈 파일에 기술하여 버전관리
-            # 이미지에 TAG를 기입하여 버전을 관리한다면 매번 갱신 가능(이미지)
-          script: |
-            sudo docker-compose -f docker-compose.prod.yml down
-            sudo docker-compose -f docker-compose.prod.yml up -d 
