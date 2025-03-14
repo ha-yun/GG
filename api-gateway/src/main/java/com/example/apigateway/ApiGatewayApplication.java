@@ -39,6 +39,8 @@ public class ApiGatewayApplication {
                         r -> r.path("/pdts/**").uri("lb://products"))
                 .route("products",
                         r -> r.path("/orders/**").uri("lb://products"))
+                .route("products",
+                        r -> r.path("/customgoods/**").uri("lb://products"))
                 .build();
 
 

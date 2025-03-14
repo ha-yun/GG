@@ -21,7 +21,7 @@ public class CustomGoodsController {
         return ResponseEntity.ok("커스텀 굿즈 저장 완료");
     }
 
-    @GetMapping("")
+    @GetMapping
     public ResponseEntity<List<CustomGoodsDto>> getAllCustomGoods() {
         return ResponseEntity.ok(customGoodsService.allCustomGoods());
     }
