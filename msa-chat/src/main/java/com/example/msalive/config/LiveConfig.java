@@ -13,7 +13,7 @@ public class LiveConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         // registry.addEndpoint("/ws").setAllowedOrigins("http://localhost:8080").withSockJS();
-        registry.addEndpoint("/ws").setAllowedOrigins("http://3.1.98.56:8080").withSockJS(); //ec2 주소
+        registry.addEndpoint("/ws").setAllowedOrigins("http://13.213.76.40:8080").withSockJS(); //ec2 주소
     }
     
     // 메시지 브로커 설정
