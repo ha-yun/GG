@@ -35,9 +35,22 @@
 4. `docker-compose.prod.yml` 파일을 사용해 컨테이너를 배포 및 실행
 
 - 기타사항
-    - 메모리 확보 : t2.micro(프리티어) 버전은 1G메모리 => 스프링부트 빌드 과정이 진행 안될 수 있음
+    - 메모리 확보(용량 확인 : `free -h`)
+        - t2.micro(프리티어) 버전은 1G메모리 => 스프링부트 빌드 과정이 진행 안될 수 있음
         - swap 설정(스왑 메모리 추가(가상 메모리))
+    - 디스크 확보 : 디스크 부족으로 서버 에러(용량 확인 : `df -h`)
+        - AWS에서 서버(EC2)의 디스크가 부족하면 → `EBS 볼륨 크기 변경(10GB → 20GB)`
+        1. **AWS 콘솔 → EC2 → Elastic Block Store(EBS) → 볼륨 클릭**
+        2. **"Actions" → "Modify Volume" 클릭**
+        3. **새로운 크기 입력 (예: 10GB → 20GB)**
+        4. **"Modify" 클릭 후 적용**
 
+<details>
+<summary><b>aws ec2에서 docker-compose 실시간 로그 확인</b></summary>
+- aws에서 docker-compose.prod.yml 파일을 사용 중
+- `docker-compose -f docker-compose.prod.yml logs -f`
+</details>
+-
 <details>
 <summary><b>로컬에서 docker-compose 테스트</b></summary>
 <div markdown="1">
