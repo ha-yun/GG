@@ -38,7 +38,7 @@
 
   function connectWebSocket() {
     // var socket = new SockJS('http://localhost:8085/ws');
-    var socket = new SockJS('http://13.213.76.40:8085/ws'); // ec2 주소
+    var socket = new SockJS('http://52.77.19.120:8085/ws'); // ec2 주소
     stompClient = Stomp.over(socket);
 
     // ✅ WebSocket 연결 시 JWT 토큰을 포함
@@ -95,7 +95,7 @@
       return;
     }
     // fetch("http://localhost:8080/auth/login", {
-    fetch("http://13.213.76.40:8080/auth/login", {
+    fetch("http://52.77.19.120:8080/auth/login", {
       method: "POST",
       mode: "cors",
       headers: {
@@ -142,7 +142,7 @@
 
   function loadLiveHistory() {
     // fetch('http://localhost:8080/api/live/history', {
-    fetch('http://13.213.76.40:8080/api/live/history', {
+    fetch('http://52.77.19.120:8080/api/live/history', {
       headers: { "Authorization": "Bearer " + localStorage.getItem("jwtToken") }
     })
             .then(response => {
