@@ -9,11 +9,10 @@ WORKDIR /app
 COPY gradlew ./
 COPY gradle/ gradle/
 COPY build.gradle settings.gradle ./
+COPY src/ src/
 
 # gradlew 실행 권한 부여 ✅
 RUN chmod +x ./gradlew
-COPY src/ src/
-
 RUN ./gradlew clean build --no-daemon -x test
 # 최종산출물 : /app/build/libs/*SNAPSHOT.jar
 
