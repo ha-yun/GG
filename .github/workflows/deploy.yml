@@ -29,7 +29,7 @@ jobs:
         run: echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
 
       - name: 도커 허브에 이미지 빌드
-        run: docker-compose build
+        run: docker-compose build --no-cache  # 캐시 없이 새로 빌드
 
       - name: 도커 허브에 이미지 빌드 확인
         run: docker images
@@ -63,4 +63,5 @@ jobs:
             # 이미지에 TAG를 기입하여 버전을 관리한다면 매번 갱신 가능(이미지)
           script: |
             sudo docker-compose -f docker-compose.prod.yml down
+            sudo docker-compose pull
             sudo docker-compose -f docker-compose.prod.yml up -d --build
