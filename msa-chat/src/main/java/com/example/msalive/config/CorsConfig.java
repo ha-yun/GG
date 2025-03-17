@@ -17,7 +17,7 @@ public class CorsConfig {
         System.out.println("corsConfigurationSource");
         CorsConfiguration config = new CorsConfiguration();
         // config.setAllowedOrigins(List.of("http://localhost:8080"));  // 프론트엔드 주소
-        config.setAllowedOrigins(List.of("http://13.213.76.40:8080"));  // ec2 주소
+        config.setAllowedOrigins(List.of("http://52.77.19.120:8080"));  // ec2 주소
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
         config.setExposedHeaders(List.of("Authorization", "Content-Type"));  // JWT 토큰 응답 허용

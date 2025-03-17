@@ -23,9 +23,9 @@ public class DataInitializer {
             List<ProductEntity> products = List.of(
                     createProduct("소녀시대 포토카드 세트", 15000, 100),
                     createProduct("소녀시대 공식 응원봉", 32000, 50),
-                    createProduct("소녀시대 콘서트 티셔츠", 28000, 70),
+                    createProduct("소녀시대 티셔츠", 28000, 70),
                     createProduct("소녀시대 한정판 앨범", 45000, 30),
-                    createProduct("소녀시대 엽서 세트", 12000, 200)
+                    createProduct("소녀시대 4CUT PHOTO SET", 8000, 100)
             );
             productsRepository.saveAll(products);
         }

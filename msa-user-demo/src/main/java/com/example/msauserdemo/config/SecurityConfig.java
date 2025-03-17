@@ -65,7 +65,7 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
         // config.setAllowedOrigins(List.of("http://localhost:8085,http://localhost:8080")); // ✅ 클라이언트 도메인 허용
-        config.setAllowedOrigins(List.of("http://13.213.76.40:8085,http://13.213.76.40:8080")); // ✅ ec2 주소
+        config.setAllowedOrigins(List.of("http://52.77.19.120:8085","http://52.77.19.120:8080")); // ✅ ec2 주소
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("Authorization", "Content-Type"));
         config.setExposedHeaders(List.of("Authorization")); // ✅ JWT 토큰 포함 가능
