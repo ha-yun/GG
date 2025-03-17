@@ -10,12 +10,15 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.List;
 
+import static org.springframework.security.config.Customizer.withDefaults;
+
 @Configuration
 public class SecurityConfig {
     // 임시로 처리
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+                .cors(withDefaults()) // ✅ CORS 전역 설정 적용
                 .csrf(csrf -> csrf.disable()) // CSRF 보호 비활성화 (테스트용)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/pdts/**", "/orders/**", "/customgoods/**").permitAll() // "/pdts" 엔드포인트는 인증 없이 접근 가능
