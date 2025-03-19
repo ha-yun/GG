@@ -120,7 +120,10 @@
 | `/pdts`                 		| `GET`      	| 굿즈 전체 목록 조회            	| 없음                                     		| 굿즈 목록 반환 (`ProductDto`)                                                	|
 | `/pdts/detail/{pdtId}`  		| `GET`      	| 굿즈 상세 조회                 		| Path: pdtId                             		| 상세 정보 반환 (`ProductDetailDto`)                                           	|
 | `/pdts/search?keyword=` 		| `GET`      	| 키워드로 굿즈 검색             		| Query: keyword                          		| 검색된 굿즈 목록 반환                                                       	|
-| `/pdts/filter?minPrice=&maxPrice=`  	| GET     		| 가격 필터링                    			| Query: minPrice, maxPrice               		| 필터링된 굿즈 목록 반환                                                      |
+| `/pdts/filter?minPrice=&maxPrice=`  	| `GET`    		| 가격 필터링                    			| Query: minPrice, maxPrice               		| 필터링된 굿즈 목록 반환                                                      |
+| 서비스 확장 (customgoods 추가)-- | -- | -- | -- | -- |
+| `/customgoods`  	| `GET`     		| 커스텀 굿즈 조회                   			| 없음               		| 커스텀 굿즈 목록 반환 (`CustomGoodsDto`) |
+| `/customgoods/save`  	| `POST`     		| 커스텀 굿즈 저장                   			| Body: `CustomGoodsDto` (json)              		| `200 OK` : `커스텀 굿즈 저장 완료` |    
 
 ---
 
