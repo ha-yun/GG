@@ -33,7 +33,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of("http://52.77.19.120:5000","http://127.0.0.1:5000")); // ✅ ec2 주소
+        config.setAllowedOrigins(List.of("http://52.77.19.120:5000","http://127.0.0.1:5000","http://127.0.0.1:5001")); // ✅ ec2 주소
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("Authorization", "Content-Type"));
         config.setExposedHeaders(List.of("Authorization")); // ✅ JWT 토큰 포함 가능
